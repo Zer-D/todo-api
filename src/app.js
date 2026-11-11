@@ -1,3 +1,4 @@
+const cors = require("cors");
 const express = require("express");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
@@ -14,6 +15,7 @@ const app = express();
 
 app.use(logger);
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
     res.json({ message: "Todo API is running" });
