@@ -4,12 +4,15 @@ const AppError = require("../utils/AppError");
 const catchAsync = require("../utils/catchAsync");
 
 const createTodo = catchAsync(async (req, res, next) => {
-    const { title, description } = req.body;
+    const { title, description, category } = req.body;
 
     const todo = await todoService.createTodo({
         title,
         description,
+        category,
         owner: req.user._id,
+        created_by: req.user._id,
+        updated_by: req.user._id,
     });
 
     await Log.create({
@@ -26,8 +29,8 @@ const createTodo = catchAsync(async (req, res, next) => {
 });
 
 const getAllTodos = catchAsync(async (req, res, next) => {
-    const { page, limit, completed, sortBy, order } = req.query;
-    const queryOptions = { page, limit, completed, sortBy, order };
+    const { page, limit, completed, sortBy, order, search } = req.query;
+    const queryOptions = { page, limit, completed, sortBy, order, search };
 
     const result =
     req.user.role === "admin"
@@ -65,7 +68,7 @@ const getTodoById = catchAsync(async (req, res, next) => {
 
 const updateTodo = catchAsync(async (req, res, next) => {
     const { id } = req.params;
-    const { title, description, completed } = req.body;
+    const { title, description, completed, category, archived } = req.body;
 
     const existingTodo = await todoService.getTodoById(id);
 
@@ -79,7 +82,14 @@ const updateTodo = catchAsync(async (req, res, next) => {
         return next(new AppError("You do not have permission to update this todo", 403));
     }
 
-    const updatedTodo = await todoService.updateTodo(id, { title, description, completed });
+    const updatedTodo = await todoService.updateTodo(id, {
+        title,
+        description,
+        completed,
+        category,
+        archived,
+        updated_by: req.user._id,
+    });
 
     await Log.create({
         user: req.user._id,

@@ -4,10 +4,13 @@ const AppError = require("../utils/AppError");
 const catchAsync = require("../utils/catchAsync");
 
 const createCategory = catchAsync(async (req, res, next) => {
-    const { name } = req.body;
+    const { name, description } = req.body;
 
     const category = await categoryService.createCategory({
         name,
+        description,
+        created_by: req.user._id,
+        updated_by: req.user._id,
     });
 
     await Log.create({
@@ -54,7 +57,7 @@ const getCategory = catchAsync(async (req, res, next) => {
 
 const updateCategory = catchAsync(async (req, res, next) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const { name, description, archived } = req.body;
 
     const existingCategory = await categoryService.getCategoryById(id);
 
@@ -62,7 +65,12 @@ const updateCategory = catchAsync(async (req, res, next) => {
         return next(new AppError("Category not found", 404));
     }
 
-    const updatedCategory = await categoryService.updateCategory(id, { name });
+    const updatedCategory = await categoryService.updateCategory(id, {
+        name,
+        description,
+        archived,
+        updated_by: req.user._id,
+    });
 
     await Log.create({
         user: req.user._id,

@@ -26,7 +26,7 @@ router.use(protect);
  *         application/json:
  *           schema:
  *             type: object
- *             required: [title]
+ *             required: [title, category]
  *             properties:
  *               title:
  *                 type: string
@@ -34,6 +34,12 @@ router.use(protect);
  *               description:
  *                 type: string
  *                 example: Menulis dokumentasi endpoint todo
+ *               category:
+ *                 type: string
+ *                 example: 665f1b2c8b1e2a1a2c3d2222
+ *               archived:
+ *                 type: boolean
+ *                 example: false
  *     responses:
  *       201:
  *         description: Todo berhasil dibuat
@@ -47,7 +53,11 @@ router.use(protect);
  *                 data:
  *                   $ref: '#/components/schemas/Todo'
  *       400:
- *         description: Validasi gagal (misal title kosong atau kurang dari 3 karakter)
+ *         description: Validasi gagal (misal title/category kosong atau ID tidak valid)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
  *         description: Belum login / token tidak valid
  */
@@ -57,7 +67,7 @@ router.post("/", createTodoRules, validate, todoController.createTodo);
  * @swagger
  * /api/todos:
  *   get:
- *     summary: Mengambil daftar todo milik user yang sedang login (dengan pagination)
+ *     summary: Mengambil daftar todo milik user yang sedang login (dengan pagination & search)
  *     tags: [Todos]
  *     security:
  *       - bearerAuth: []
@@ -75,6 +85,11 @@ router.post("/", createTodoRules, validate, todoController.createTodo);
  *           minimum: 1
  *           maximum: 100
  *         description: Jumlah data per halaman
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Kata kunci pencarian berdasarkan judul (title)
  *       - in: query
  *         name: completed
  *         schema:
@@ -187,6 +202,12 @@ router.get("/:id", getTodoByIdRules, validate, todoController.getTodoById);
  *               completed:
  *                 type: boolean
  *                 example: true
+ *               category:
+ *                 type: string
+ *                 example: 665f1b2c8b1e2a1a2c3d2222
+ *               archived:
+ *                 type: boolean
+ *                 example: false
  *     responses:
  *       200:
  *         description: Todo berhasil diupdate

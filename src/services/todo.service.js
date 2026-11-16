@@ -4,18 +4,27 @@ async function createTodo(data) {
     const todo = new Todo({
         title: data.title,
         description: data.description,
+        completed: data.completed,
+        category: data.category,
         owner: data.owner,
+        created_by: data.created_by,
+        updated_by: data.updated_by,
+        archived: data.archived || false,
     });
     return await todo.save();
 }
 
 async function getAllTodos(ownerId, queryOptions) {
-    const { page = 1, limit = 10, completed, sortBy = "createdAt", order = "desc" } = queryOptions;
+    const { page = 1, limit = 10, completed, sortBy = "createdAt", order = "desc", search } = queryOptions;
 
     const filter = { owner: ownerId };
 
     if (completed !== undefined) {
         filter.completed = completed === "true";
+    }
+
+    if (search) {
+        filter.title = { $regex: search, $options: "i" };
     }
 
     const sortDirection = order === "asc" ? 1 : -1;
@@ -25,8 +34,9 @@ async function getAllTodos(ownerId, queryOptions) {
         Todo.find(filter)
         .sort({ [sortBy]: sortDirection })
         .skip(skip)
-        .limit(Number(limit)),
-                                                  Todo.countDocuments(filter),
+        .limit(Number(limit))
+        .populate("category", "name description"),
+        Todo.countDocuments(filter),
     ]);
 
     const totalPages = Math.ceil(totalItems / Number(limit));
@@ -43,12 +53,16 @@ async function getAllTodos(ownerId, queryOptions) {
 }
 
 async function getAllTodosForAdmin(queryOptions) {
-    const { page = 1, limit = 10, completed, sortBy = "createdAt", order = "desc" } = queryOptions;
+    const { page = 1, limit = 10, completed, sortBy = "createdAt", order = "desc", search } = queryOptions;
 
     const filter = {};
 
     if (completed !== undefined) {
         filter.completed = completed === "true";
+    }
+
+    if (search) {
+        filter.title = { $regex: search, $options: "i" };
     }
 
     const sortDirection = order === "asc" ? 1 : -1;
@@ -59,8 +73,9 @@ async function getAllTodosForAdmin(queryOptions) {
         .sort({ [sortBy]: sortDirection })
         .skip(skip)
         .limit(Number(limit))
-        .populate("owner", "name email"),
-                                                  Todo.countDocuments(filter),
+        .populate("owner", "name email")
+        .populate("category", "name description"),
+        Todo.countDocuments(filter),
     ]);
 
     const totalPages = Math.ceil(totalItems / Number(limit));
@@ -77,7 +92,7 @@ async function getAllTodosForAdmin(queryOptions) {
 }
 
 async function getTodoById(id) {
-    return await Todo.findById(id);
+    return await Todo.findById(id).populate("category", "name description");
 }
 
 async function updateTodo(id, data) {
@@ -87,9 +102,12 @@ async function updateTodo(id, data) {
             title: data.title,
             description: data.description,
             completed: data.completed,
+            category: data.category,
+            archived: data.archived,
+            updated_by: data.updated_by,
         },
         { new: true, runValidators: true }
-    );
+    ).populate("category", "name description");
 }
 
 async function deleteTodo(id) {

@@ -13,10 +13,6 @@ const options = {
                 url: '/',
                 description: 'Current Server (Auto Detect / Vercel Production)',
             },
-            {
-                url: 'http://localhost:3000',
-                description: 'Local development server',
-            },
         ],
         components: {
             securitySchemes: {
@@ -32,6 +28,28 @@ const options = {
                 },
             },
             schemas: {
+                User: {
+                    type: "object",
+                    properties: {
+                        _id: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
+                        name: { type: "string", example: "Ahmad Dzikri" },
+                        email: { type: "string", example: "dzikri@email.com" },
+                        role: { type: "string", enum: ["user", "admin"], example: "user" },
+                    },
+                },
+                Category: {
+                    type: "object",
+                    properties: {
+                        _id: { type: "string", example: "665f1b2c8b1e2a1a2c3d2222" },
+                        name: { type: "string", example: "Pekerjaan" },
+                        description: { type: "string", example: "Tugas harian terkait kantor" },
+                        created_by: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
+                        updated_by: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
+                        archived: { type: "boolean", example: false },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" },
+                    },
+                },
                 Todo: {
                     type: "object",
                     properties: {
@@ -39,9 +57,30 @@ const options = {
                         title: { type: "string", example: "Belajar Swagger" },
                         description: { type: "string", example: "Menulis dokumentasi endpoint todo" },
                         completed: { type: "boolean", example: false },
+                        category: { type: "string", example: "665f1b2c8b1e2a1a2c3d2222" },
                         owner: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
+                        created_by: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
+                        updated_by: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
+                        archived: { type: "boolean", example: false },
                         createdAt: { type: "string", format: "date-time" },
                         updatedAt: { type: "string", format: "date-time" },
+                    },
+                },
+                ActivityLog: {
+                    type: "object",
+                    properties: {
+                        _id: { type: "string", example: "665f1d2e8b1e2a1a2c3d6789" },
+                        user: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
+                        action: { type: "string", example: "CREATE_TODO" },
+                        description: { type: "string", example: "User membuat todo baru: 'Belajar Swagger'" },
+                        createdAt: { type: "string", format: "date-time" },
+                    },
+                },
+                ErrorResponse: {
+                    type: "object",
+                    properties: {
+                        success: { type: "boolean", example: false },
+                        message: { type: "string", example: "Invalid input data or resource not found" },
                     },
                 },
             },

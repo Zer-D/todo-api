@@ -4,7 +4,7 @@ const todoSchema = new mongoose.Schema(
     {
         title: {
             type: String,
-            required: true,
+            required: [true, "Todo title is required"],
             trim: true,
         },
         description: {
@@ -15,10 +15,28 @@ const todoSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        category: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category",
+            required: [true, "Todo must belong to a category"],
+        },
         owner: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: true,
+        },
+        created_by: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        updated_by: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
+        archived: {
+            type: Boolean,
+            default: false,
         },
     },
     {

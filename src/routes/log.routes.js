@@ -9,7 +9,7 @@ router.use(protect);
  * @swagger
  * /api/logs:
  *   get:
- *     summary: Mengambil daftar seluruh activity logs (Khusus Admin)
+ *     summary: Mengambil daftar activity logs (Admin melihat semua, User melihat miliknya sendiri)
  *     tags: [Logs]
  *     security:
  *       - bearerAuth: []
@@ -40,8 +40,6 @@ router.use(protect);
  *         description: Daftar activity logs berhasil diambil
  *       401:
  *         description: Unauthorized (Token tidak valid/tidak ada)
- *       403:
- *         description: Forbidden (Hanya admin yang diizinkan)
  */
 router.get("/", logController.getAllLogs);
 

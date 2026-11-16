@@ -32,15 +32,30 @@ router.use(protect);
  *               name:
  *                 type: string
  *                 example: "Teknologi"
+ *               description:
+ *                 type: string
+ *                 example: "Kategori seputar dunia teknologi dan programming"
+ *               archived:
+ *                 type: boolean
+ *                 example: false
  *     responses:
  *       201:
  *         description: Kategori berhasil dibuat
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean, example: true }
+ *                 message: { type: string, example: Category created successfully }
+ *                 data:
+ *                   $ref: '#/components/schemas/Category'
  *       400:
  *         description: Validasi gagal atau nama sudah ada
  *       401:
  *         description: Unauthorized
  *   get:
- *     summary: Mengambil daftar kategori (dengan pagination)
+ *     summary: Mengambil daftar kategori (dengan pagination & search)
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -55,9 +70,39 @@ router.use(protect);
  *         schema:
  *           type: integer
  *         description: Jumlah data per halaman
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Kata kunci pencarian berdasarkan nama kategori
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, name]
+ *         description: Field acuan sorting
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: Urutan sorting
  *     responses:
  *       200:
  *         description: Daftar kategori berhasil diambil
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean, example: true }
+ *                 message: { type: string, example: Categories retrieved successfully }
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Category'
+ *                 pagination:
+ *                   type: object
  *       401:
  *         description: Unauthorized
  */
@@ -82,6 +127,15 @@ router.get("/", getAllCategoriesRules, validate, categoryController.getAllCatego
  *     responses:
  *       200:
  *         description: Kategori ditemukan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean, example: true }
+ *                 message: { type: string, example: Category retrieved successfully }
+ *                 data:
+ *                   $ref: '#/components/schemas/Category'
  *       404:
  *         description: Kategori tidak ditemukan
  *   put:
@@ -105,9 +159,24 @@ router.get("/", getAllCategoriesRules, validate, categoryController.getAllCatego
  *               name:
  *                 type: string
  *                 example: "Pendidikan"
+ *               description:
+ *                 type: string
+ *                 example: "Kategori materi pembelajaran"
+ *               archived:
+ *                 type: boolean
+ *                 example: false
  *     responses:
  *       200:
  *         description: Kategori berhasil diperbarui
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean, example: true }
+ *                 message: { type: string, example: Category updated successfully }
+ *                 data:
+ *                   $ref: '#/components/schemas/Category'
  *       404:
  *         description: Kategori tidak ditemukan
  *   delete:
