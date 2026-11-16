@@ -35,9 +35,6 @@ router.use(protect);
  *               description:
  *                 type: string
  *                 example: "Kategori seputar dunia teknologi dan programming"
- *               archived:
- *                 type: boolean
- *                 example: false
  *     responses:
  *       201:
  *         description: Kategori berhasil dibuat
@@ -51,9 +48,11 @@ router.use(protect);
  *                 data:
  *                   $ref: '#/components/schemas/Category'
  *       400:
- *         description: Validasi gagal atau nama sudah ada
+ *         description: Validasi gagal (misal nama kosong)
  *       401:
  *         description: Unauthorized
+ *       409:
+ *         description: Nama kategori sudah ada
  *   get:
  *     summary: Mengambil daftar kategori (dengan pagination & search)
  *     tags: [Categories]
@@ -177,8 +176,12 @@ router.get("/", getAllCategoriesRules, validate, categoryController.getAllCatego
  *                 message: { type: string, example: Category updated successfully }
  *                 data:
  *                   $ref: '#/components/schemas/Category'
+ *       400:
+ *         description: Validasi gagal (nama kosong atau format ID tidak valid)
  *       404:
  *         description: Kategori tidak ditemukan
+ *       409:
+ *         description: Nama kategori sudah dipakai kategori lain
  *   delete:
  *     summary: Menghapus kategori berdasarkan ID
  *     tags: [Categories]

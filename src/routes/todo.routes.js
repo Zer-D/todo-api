@@ -30,16 +30,17 @@ router.use(protect);
  *             properties:
  *               title:
  *                 type: string
+ *                 minLength: 3
+ *                 maxLength: 100
  *                 example: Belajar Swagger
  *               description:
  *                 type: string
+ *                 maxLength: 500
  *                 example: Menulis dokumentasi endpoint todo
  *               category:
  *                 type: string
+ *                 description: ID kategori (wajib, format ObjectId MongoDB)
  *                 example: 665f1b2c8b1e2a1a2c3d2222
- *               archived:
- *                 type: boolean
- *                 example: false
  *     responses:
  *       201:
  *         description: Todo berhasil dibuat
@@ -53,7 +54,7 @@ router.use(protect);
  *                 data:
  *                   $ref: '#/components/schemas/Todo'
  *       400:
- *         description: Validasi gagal (misal title/category kosong atau ID tidak valid)
+ *         description: Validasi gagal (misal title kosong atau di luar 3-100 karakter, category kosong atau bukan ID yang valid)
  *         content:
  *           application/json:
  *             schema:
@@ -67,7 +68,7 @@ router.post("/", createTodoRules, validate, todoController.createTodo);
  * @swagger
  * /api/todos:
  *   get:
- *     summary: Mengambil daftar todo milik user yang sedang login (dengan pagination & search)
+ *     summary: Mengambil daftar todo (user biasa hanya melihat miliknya, admin melihat todo semua user) dengan pagination & search
  *     tags: [Todos]
  *     security:
  *       - bearerAuth: []
@@ -165,7 +166,7 @@ router.get("/", getAllTodosRules, validate, todoController.getAllTodos);
  *       401:
  *         description: Belum login / token tidak valid
  *       403:
- *         description: Todo ini bukan milik user yang sedang login
+ *         description: Todo ini bukan milik user yang sedang login (admin dikecualikan)
  *       404:
  *         description: Todo tidak ditemukan
  */
@@ -195,9 +196,12 @@ router.get("/:id", getTodoByIdRules, validate, todoController.getTodoById);
  *             properties:
  *               title:
  *                 type: string
+ *                 minLength: 3
+ *                 maxLength: 100
  *                 example: Belajar Swagger (revisi)
  *               description:
  *                 type: string
+ *                 maxLength: 500
  *                 example: Menambahkan contoh response schema
  *               completed:
  *                 type: boolean
@@ -225,7 +229,7 @@ router.get("/:id", getTodoByIdRules, validate, todoController.getTodoById);
  *       401:
  *         description: Belum login / token tidak valid
  *       403:
- *         description: Todo ini bukan milik user yang sedang login
+ *         description: Todo ini bukan milik user yang sedang login (admin dikecualikan)
  *       404:
  *         description: Todo tidak ditemukan
  */
@@ -263,7 +267,7 @@ router.put("/:id", updateTodoRules, validate, todoController.updateTodo);
  *       401:
  *         description: Belum login / token tidak valid
  *       403:
- *         description: Todo ini bukan milik user yang sedang login
+ *         description: Todo ini bukan milik user yang sedang login (admin dikecualikan)
  *       404:
  *         description: Todo tidak ditemukan
  */

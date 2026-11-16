@@ -13,6 +13,12 @@ const createTodoRules = [
     .trim()
     .isLength({ max: 500 })
     .withMessage("Description must not exceed 500 characters"),
+
+    body("category")
+    .notEmpty()
+    .withMessage("Category is required")
+    .isMongoId()
+    .withMessage("Invalid category ID format"),
 ];
 
 const updateTodoRules = [
@@ -34,6 +40,16 @@ const updateTodoRules = [
     .optional()
     .isBoolean()
     .withMessage("Completed must be true or false"),
+
+    body("category")
+    .optional()
+    .isMongoId()
+    .withMessage("Invalid category ID format"),
+
+    body("archived")
+    .optional()
+    .isBoolean()
+    .withMessage("Archived must be true or false"),
 ];
 
 const getTodoByIdRules = [param("id").isMongoId().withMessage("Invalid todo ID format")];
