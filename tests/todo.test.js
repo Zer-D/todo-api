@@ -16,11 +16,22 @@ async function registerAndLogin(email = "budi@example.com") {
     return loginRes.body.data.token;
 }
 
+async function createCategory(token, name = "Pekerjaan") {
+    const res = await request(app)
+    .post("/api/categories")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ name });
+
+    return res.body.data._id;
+}
+
 describe("Todo Endpoints", () => {
     let token;
+    let categoryId;
 
     beforeEach(async () => {
         token = await registerAndLogin();
+        categoryId = await createCategory(token);
     });
 
     describe("POST /api/todos", () => {
@@ -28,17 +39,18 @@ describe("Todo Endpoints", () => {
             const res = await request(app)
             .post("/api/todos")
             .set("Authorization", `Bearer ${token}`)
-            .send({ title: "Belajar Jest dan Supertest" });
+            .send({ title: "Belajar Jest dan Supertest", category: categoryId });
 
             expect(res.statusCode).toBe(201);
             expect(res.body.data.title).toBe("Belajar Jest dan Supertest");
             expect(res.body.data.completed).toBe(false);
+            expect(res.body.data.category).toBe(categoryId);
         });
 
         it("should reject creating todo without authentication", async () => {
             const res = await request(app)
             .post("/api/todos")
-            .send({ title: "Tanpa token" });
+            .send({ title: "Tanpa token", category: categoryId });
 
             expect(res.statusCode).toBe(401);
         });
@@ -47,10 +59,30 @@ describe("Todo Endpoints", () => {
             const res = await request(app)
             .post("/api/todos")
             .set("Authorization", `Bearer ${token}`)
-            .send({ title: "ab" });
+            .send({ title: "ab", category: categoryId });
 
             expect(res.statusCode).toBe(400);
             expect(res.body.message).toMatch(/between 3 and 100/i);
+        });
+
+        it("should reject creating todo without a category", async () => {
+            const res = await request(app)
+            .post("/api/todos")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ title: "Todo tanpa kategori" });
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body.message).toMatch(/category is required/i);
+        });
+
+        it("should reject an invalid category ID format", async () => {
+            const res = await request(app)
+            .post("/api/todos")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ title: "Todo kategori salah", category: "abc" });
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body.message).toMatch(/invalid category id/i);
         });
     });
 
@@ -60,7 +92,7 @@ describe("Todo Endpoints", () => {
                 await request(app)
                 .post("/api/todos")
                 .set("Authorization", `Bearer ${token}`)
-                .send({ title: `Todo ke-${i}` });
+                .send({ title: `Todo ke-${i}`, category: categoryId });
             }
 
             const res = await request(app)
@@ -77,7 +109,7 @@ describe("Todo Endpoints", () => {
             await request(app)
             .post("/api/todos")
             .set("Authorization", `Bearer ${token}`)
-            .send({ title: "Todo milik Budi" });
+            .send({ title: "Todo milik Budi", category: categoryId });
 
             const otherToken = await registerAndLogin("siti@example.com");
 
@@ -95,7 +127,7 @@ describe("Todo Endpoints", () => {
             const createRes = await request(app)
             .post("/api/todos")
             .set("Authorization", `Bearer ${token}`)
-            .send({ title: "Todo milik Budi" });
+            .send({ title: "Todo milik Budi", category: categoryId });
 
             const todoId = createRes.body.data._id;
             const otherToken = await registerAndLogin("siti@example.com");
