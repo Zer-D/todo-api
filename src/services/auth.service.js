@@ -8,14 +8,14 @@ function generateToken(userId) {
     });
 }
 
-async function register({ name, email, password, role }) {
+async function register({ name, email, password }) {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
         throw new AppError("Email is already registered", 409);
     }
 
-    const user = await User.create({ name, email, password, role });
+    const user = await User.create({ name, email, password });
     const token = generateToken(user._id);
 
     return { user, token };

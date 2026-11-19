@@ -3,13 +3,13 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/AppError");
 
 const register = catchAsync(async (req, res, next) => {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
         return next(new AppError("Name, email, and password are required", 400));
     }
 
-    const { user, token } = await authService.register({ name, email, password, role });
+    const { user, token } = await authService.register({ name, email, password });
 
     res.status(201).json({
         success: true,
