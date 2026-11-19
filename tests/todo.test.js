@@ -65,24 +65,36 @@ describe("Todo Endpoints", () => {
             expect(res.body.message).toMatch(/between 3 and 100/i);
         });
 
-        it("should reject creating todo without a category", async () => {
+        it("should create todo without category (category is optional)", async () => {
             const res = await request(app)
-            .post("/api/todos")
-            .set("Authorization", `Bearer ${token}`)
-            .send({ title: "Todo tanpa kategori" });
+                .post("/api/todos")
+                .set("Authorization", `Bearer ${token}`)
+                .send({ title: "Todo tanpa kategori" });
 
-            expect(res.statusCode).toBe(400);
-            expect(res.body.message).toMatch(/category is required/i);
+            expect(res.statusCode).toBe(201);
+            expect(res.body.data.title).toBe("Todo tanpa kategori");
+            expect(res.body.data.category).toBeUndefined();
         });
 
         it("should reject an invalid category ID format", async () => {
             const res = await request(app)
-            .post("/api/todos")
-            .set("Authorization", `Bearer ${token}`)
-            .send({ title: "Todo kategori salah", category: "abc" });
+                .post("/api/todos")
+                .set("Authorization", `Bearer ${token}`)
+                .send({ title: "Todo kategori salah", category: "abc" });
 
             expect(res.statusCode).toBe(400);
             expect(res.body.message).toMatch(/invalid category id/i);
+        });
+
+        it("should reject creating todo with non-existent category", async () => {
+            const fakeCategoryId = "665f1b2c8b1e2a1a2c3d9999";
+            const res = await request(app)
+                .post("/api/todos")
+                .set("Authorization", `Bearer ${token}`)
+                .send({ title: "Todo dengan kategori tidak ada", category: fakeCategoryId });
+
+            expect(res.statusCode).toBe(404);
+            expect(res.body.message).toMatch(/category not found/i);
         });
     });
 

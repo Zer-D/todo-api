@@ -15,8 +15,7 @@ const createTodoRules = [
     .withMessage("Description must not exceed 500 characters"),
 
     body("category")
-    .notEmpty()
-    .withMessage("Category is required")
+    .optional()
     .isMongoId()
     .withMessage("Invalid category ID format"),
 ];

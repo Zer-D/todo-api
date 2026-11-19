@@ -26,7 +26,7 @@ router.use(protect);
  *         application/json:
  *           schema:
  *             type: object
- *             required: [title, category]
+ *             required: [title]
  *             properties:
  *               title:
  *                 type: string
@@ -39,7 +39,7 @@ router.use(protect);
  *                 example: Menulis dokumentasi endpoint todo
  *               category:
  *                 type: string
- *                 description: ID kategori (wajib, format ObjectId MongoDB)
+ *                 description: ID kategori (opsional, format ObjectId MongoDB)
  *                 example: 665f1b2c8b1e2a1a2c3d2222
  *     responses:
  *       201:
@@ -54,7 +54,7 @@ router.use(protect);
  *                 data:
  *                   $ref: '#/components/schemas/Todo'
  *       400:
- *         description: Validasi gagal (misal title kosong atau di luar 3-100 karakter, category kosong atau bukan ID yang valid)
+ *         description: Validasi gagal (misal title kosong atau di luar 3-100 karakter, atau ID kategori tidak valid saat dikirim)
  *         content:
  *           application/json:
  *             schema:

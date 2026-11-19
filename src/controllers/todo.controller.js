@@ -2,9 +2,17 @@ const todoService = require("../services/todo.service");
 const Log = require("../models/log.model");
 const AppError = require("../utils/AppError");
 const catchAsync = require("../utils/catchAsync");
+const Category = require("../models/category.model");
 
 const createTodo = catchAsync(async (req, res, next) => {
     const { title, description, category } = req.body;
+
+    if (category) {
+        const categoryExists = await Category.findById(category);
+        if (!categoryExists) {
+            return next(new AppError("Category not found", 404));
+        }
+    }
 
     const todo = await todoService.createTodo({
         title,
@@ -80,6 +88,13 @@ const updateTodo = catchAsync(async (req, res, next) => {
 
     if (!isOwner && req.user.role !== "admin") {
         return next(new AppError("You do not have permission to update this todo", 403));
+    }
+
+    if (category) {
+        const categoryExists = await Category.findById(category);
+        if (!categoryExists) {
+            return next(new AppError("Category not found", 404));
+        }
     }
 
     const updatedTodo = await todoService.updateTodo(id, {
