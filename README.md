@@ -1,102 +1,106 @@
-# Todo List API
+# Todo List Management API
 
-API backend profesional untuk manajemen Todo List, Kategori, dan Activity Log. Dibangun dengan arsitektur terstruktur (MVC + Service Layer) untuk memenuhi standar production, dilengkapi dengan autentikasi JWT, role-based access control (RBAC), validasi input, pengujian otomatis, dan dokumentasi interaktif Swagger UI.
+A production-ready REST API for managing todo lists, categories, and activity logs. Built with a structured architecture (MVC + Service Layer) and equipped with JWT authentication, role-based access control (RBAC), input validation, automated testing, and interactive Swagger UI documentation.
 
-## Daftar Isi
+## Table of Contents
 
-* [Fitur](#fitur)
-* [Teknologi yang Dipakai](#teknologi-yang-dipakai)
-* [Struktur Project](#struktur-project)
-* [Persyaratan](#persyaratan)
-* [Instalasi](#instalasi)
-* [Environment Variables](#environment-variables)
-* [Menjalankan Project](#menjalankan-project)
-* [Menjalankan Pengujian](#menjalankan-pengujian)
-* [Deployment (Vercel)](#deployment-vercel)
-* [Referensi Endpoint & Dokumentasi](#referensi-endpoint--dokumentasi)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Running the Project](#running-the-project)
+- [Running Tests](#running-tests)
+- [Deployment (Vercel)](#deployment-vercel)
+- [API Reference & Documentation](#api-reference--documentation)
 
-## Fitur
+## Features
 
-* **Autentikasi & Otorisasi:** Register & Login menggunakan JSON Web Token (JWT) dengan *role-based access* (`user` & `admin`).
-* **Manajemen Todo & Kategori:** CRUD lengkap untuk Todo (dengan kepemilikan data/owner) dan Kategori.
-* **Activity Log:** Mencatat riwayat aktivitas mutasi data pengguna ke database secara otomatis. Admin dapat melihat log semua user, sedangkan user biasa hanya melihat log miliknya sendiri.
-* **Stats dengan API Key:** Endpoint ringkasan statistik (total, selesai, belum selesai) untuk integrasi eksternal, diproteksi header `x-api-key` (bukan JWT).
-* **Keamanan & Validasi:** Global error handling, logger, dan validasi input ketat dengan `express-validator`.
-* **Pengujian Otomatis:** Integration test dengan Jest & Supertest menggunakan database MongoDB in-memory.
-* **Dokumentasi:** Dokumentasi API interaktif dengan Swagger UI.
+- **Authentication & Authorization:** Register & Login using JSON Web Tokens (JWT) with role-based access (`user` & `admin`).
+- **Todo & Category Management:** Full CRUD operations for Todos (with data ownership) and Categories.
+- **Activity Log:** Automatic logging of user data mutations to the database. Admins can view logs for all users; regular users see only their own logs.
+- **Stats with API Key:** Summary statistics endpoint (total, completed, pending) for external integrations, protected by `x-api-key` header (not JWT).
+- **Security & Validation:** Global error handling, logging, and strict input validation with `express-validator`.
+- **Automated Testing:** Integration tests with Jest & Supertest using an in-memory MongoDB database.
+- **Documentation:** Interactive API documentation with Swagger UI.
 
-## Teknologi yang Dipakai
+## Tech Stack
 
-* **Core:** Node.js, Express 5, CORS
-* **Database:** MongoDB, Mongoose
-* **Security:** bcryptjs, jsonwebtoken, dotenv
-* **Validation:** express-validator
-* **Dokumentasi:** swagger-jsdoc, swagger-ui-express
-* **Testing:** Jest, Supertest, mongodb-memory-server
-* **Development:** Nodemon
+- **Core:** Node.js, Express 5, CORS
+- **Database:** MongoDB, Mongoose
+- **Security:** bcryptjs, jsonwebtoken, dotenv
+- **Validation:** express-validator
+- **Documentation:** swagger-jsdoc, swagger-ui-express
+- **Testing:** Jest, Supertest, mongodb-memory-server
+- **Development:** Nodemon
 
-## Struktur Project
+## Project Structure
 
 ```
 todo-api/
 ├── api/
-│   └── index.js         # Entry point serverless untuk deploy ke Vercel
+│   └── index.js          # Serverless entry point for Vercel deployment
 ├── src/
-│   ├── config/          # Konfigurasi database (db.js) & Swagger (swagger.js)
-│   ├── controllers/     # Logika controller (auth, todo, category, stats, log)
-│   ├── middlewares/     # API key, auth, restrictTo (role), error handler, logger, validate, notFound
-│   ├── models/          # Skema Mongoose (user, todo, category, log)
-│   ├── routes/          # Router untuk tiap endpoint API
-│   ├── services/        # Business logic / service layer (auth, todo, category, log)
-│   ├── utils/           # Utility functions (AppError, catchAsync)
-│   ├── validators/      # Skema validasi express-validator (todo, category)
-│   ├── app.js           # Setup utama Express
-│   └── server.js        # Entry point aplikasi (lokal)
+│   ├── config/           # Database (db.js) & Swagger (swagger.js) configuration
+│   ├── controllers/      # Controller logic (auth, todo, category, stats, log)
+│   ├── middlewares/      # API key, auth, restrictTo (role), error handler, logger, validate, notFound
+│   ├── models/           # Mongoose schemas (user, todo, category, log)
+│   ├── routes/           # Router for each API endpoint
+│   ├── services/         # Business logic / service layer (auth, todo, category, log)
+│   ├── utils/            # Utility functions (AppError, catchAsync)
+│   ├── validators/       # express-validator schemas (todo, category)
+│   ├── app.js            # Main Express setup
+│   └── server.js         # Local application entry point
 ├── tests/
-│   ├── setup.js         # Setup pengujian (database in-memory)
-│   ├── auth.test.js     # Pengujian autentikasi
-│   ├── todo.test.js     # Pengujian todo
-│   ├── category.test.js # Pengujian kategori
-│   ├── log.test.js      # Pengujian activity log
-│   └── stats.test.js    # Pengujian statistik
-├── .env.example         # Contoh environment variables (salin menjadi .env)
+│   ├── setup.js          # Test setup (in-memory database)
+│   ├── auth.test.js      # Authentication tests
+│   ├── todo.test.js      # Todo tests
+│   ├── category.test.js  # Category tests
+│   ├── log.test.js       # Activity log tests
+│   └── stats.test.js     # Statistics tests
+├── .env.example          # Example environment variables (copy to .env)
 ├── .gitignore
-├── jest.config.js       # Konfigurasi Jest
+├── jest.config.js        # Jest configuration
 ├── package.json
-├── vercel.json          # Konfigurasi deployment Vercel
+├── vercel.json           # Vercel deployment configuration
 └── README.md
 ```
 
-> File `.env` dibuat sendiri secara lokal dari `.env.example` dan tidak ikut di-push ke repository.
+> The `.env` file is created locally from `.env.example` and is not committed to the repository.
 
-## Persyaratan
+## Requirements
 
-### Sistem Operasi Kompatibel
-* **Windows:** Windows 10 / 11 (64-bit)
-* **Linux:** Ubuntu, Debian, Fedora, Arch Linux (atau distro Linux 64-bit lainnya)
-* **macOS:** macOS 10.15 (Catalina) atau versi lebih baru (Apple Silicon & Intel)
+### Compatible Operating Systems
 
-### Perangkat Lunak
-* [Node.js](https://nodejs.org/) (versi 18.x atau terbaru disarankan)
-* MongoDB (Database lokal v5.0+ atau layanan cloud MongoDB Atlas) — dibutuhkan untuk menjalankan aplikasi, **tidak** untuk menjalankan pengujian
-* Git (opsional, untuk manajemen kode / version control)
+- **Windows:** Windows 10 / 11 (64-bit)
+- **Linux:** Ubuntu, Debian, Fedora, Arch Linux (or any 64-bit Linux distribution)
+- **macOS:** macOS 10.15 (Catalina) or later (Apple Silicon & Intel)
 
-## Instalasi
+### Software
 
-1. Clone repository ini:
+- [Node.js](https://nodejs.org/) (version 18.x or later recommended)
+- MongoDB (Local database v5.0+ or MongoDB Atlas cloud service) — required for running the application, **not** for running tests
+- Git (optional, for version control)
+
+## Installation
+
+1. Clone the repository:
+
    ```bash
    git clone https://github.com/Zer-D/todo-api.git
    cd todo-api
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 ## Environment Variables
 
-Salin file contoh `.env.example` menjadi `.env` di root folder project:
+Copy the example `.env.example` file to `.env` in the project root:
 
 ```bash
 # Linux / macOS
@@ -106,99 +110,102 @@ cp .env.example .env
 copy .env.example .env
 ```
 
-Lalu sesuaikan isinya. Isi default dari `.env.example`:
+Then adjust the values. Default contents of `.env.example`:
 
 ```env
 PORT=3000
 MONGODB_URI=mongodb://127.0.0.1:27017/todo_api_db
 NODE_ENV=development
-JWT_SECRET=isi-dengan-secret-kamu-sendiri
+JWT_SECRET=replace-with-your-own-secret
 JWT_EXPIRES_IN=1d
-EXTERNAL_API_KEY=isi-dengan-api-key-kamu-sendiri
+EXTERNAL_API_KEY=replace-with-your-own-api-key
 ```
 
-| Variable           | Keterangan                                                                                              |
-| ------------------ | ------------------------------------------------------------------------------------------------------- |
-| `PORT`             | Port server                                                                                             |
-| `MONGODB_URI`      | Connection string MongoDB. Default untuk database lokal; untuk MongoDB Atlas gunakan URI `mongodb+srv://...` |
-| `NODE_ENV`         | Mode aplikasi (`development` atau `production`)                                                         |
-| `JWT_SECRET`       | Secret key untuk menandatangani token JWT. **Ganti dengan nilai acak yang panjang di production**       |
-| `JWT_EXPIRES_IN`   | Masa berlaku token (contoh: `1d`)                                                                       |
-| `EXTERNAL_API_KEY` | API key untuk endpoint `GET /api/stats/summary`, dikirim lewat header `x-api-key`                       |
+| Variable            | Description                                                                                                 |
+| ------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `PORT`              | Server port                                                                                                 |
+| `MONGODB_URI`       | MongoDB connection string. Default for local database; for MongoDB Atlas use `mongodb+srv://...` URI       |
+| `NODE_ENV`          | Application mode (`development` or `production`)                                                            |
+| `JWT_SECRET`        | Secret key for signing JWT tokens. **Replace with a long random value in production**                       |
+| `JWT_EXPIRES_IN`    | Token expiration time (e.g., `1d`)                                                                          |
+| `EXTERNAL_API_KEY`  | API key for `GET /api/stats/summary`, sent via `x-api-key` header                                           |
 
-> ⚠️ Jangan pernah meng-commit file `.env` yang berisi kredensial asli.
+> ⚠️ Never commit a `.env` file containing real credentials.
 
-## Menjalankan Project
+## Running the Project
 
-* Mode Development (menggunakan Nodemon):
+- **Development Mode** (with Nodemon auto-reload):
+
   ```bash
   npm run dev
   ```
 
-* Mode Production:
+- **Production Mode**:
+
   ```bash
   npm start
   ```
 
-Akses aplikasi melalui browser atau Postman di: `http://localhost:3000`
+Access the application via browser or Postman at: `http://localhost:3000`
 
-## Menjalankan Pengujian
+## Running Tests
 
-Project ini menggunakan **Jest** dan **Supertest** untuk menguji endpoint API, dengan **mongodb-memory-server** sebagai database sementara sehingga pengujian tidak menyentuh database asli kamu.
+This project uses **Jest** and **Supertest** for API endpoint testing, with **mongodb-memory-server** as a temporary database so tests don't touch your actual database.
 
 ```bash
 npm test
 ```
 
-Script tersebut menjalankan `jest --runInBand --detectOpenHandles`, yaitu test dijalankan berurutan dan koneksi yang belum tertutup akan dilaporkan.
+This runs `jest --runInBand --detectOpenHandles`, executing tests sequentially and reporting any unclosed connections.
 
-Sebelum menjalankan test, buat file `.env.test` di root project (dibaca oleh `tests/setup.js`). Isi minimal:
+Before running tests, create a `.env.test` file in the project root (loaded by `tests/setup.js`). Minimum required values:
 
 ```env
-JWT_SECRET=secret-khusus-testing
+JWT_SECRET=test-secret-key
 JWT_EXPIRES_IN=1d
-EXTERNAL_API_KEY=api-key-khusus-testing
+EXTERNAL_API_KEY=test-api-key
 ```
 
-> `MONGODB_URI` tidak perlu diisi karena test memakai database in-memory.
+> `MONGODB_URI` is not required as tests use an in-memory database.
 
-Cakupan pengujian ada di folder `tests/`: `auth.test.js` (autentikasi), `todo.test.js` (todo), `category.test.js` (kategori), `log.test.js` (activity log), dan `stats.test.js` (statistik), dengan `setup.js` sebagai konfigurasi bersama.
+Test coverage is located in the `tests/` folder: `auth.test.js` (authentication), `todo.test.js` (todos), `category.test.js` (categories), `log.test.js` (activity logs), and `stats.test.js` (statistics), with `setup.js` as shared configuration.
 
-> Saat pertama kali dijalankan, `mongodb-memory-server` akan mengunduh binary MongoDB secara otomatis, jadi dibutuhkan koneksi internet.
+> On first run, `mongodb-memory-server` downloads the MongoDB binary automatically, requiring an internet connection.
 
 ## Deployment (Vercel)
 
-Project ini sudah menyertakan `vercel.json` dan `api/index.js` sehingga bisa di-deploy ke [Vercel](https://vercel.com/) sebagai serverless function.
+This project includes `vercel.json` and `api/index.js` for deployment to [Vercel](https://vercel.com/) as a serverless function.
 
-1. Import repository ke Vercel.
-2. Tambahkan semua environment variables (lihat bagian [Environment Variables](#environment-variables)) di **Project Settings → Environment Variables**.
-3. Deploy. Untuk database, gunakan MongoDB Atlas karena database lokal tidak bisa diakses dari Vercel.
+1. Import the repository to Vercel.
+2. Add all environment variables (see [Environment Variables](#environment-variables)) in **Project Settings → Environment Variables**.
+3. Deploy. For the database, use MongoDB Atlas since local databases are not accessible from Vercel.
 
-## Referensi Endpoint & Dokumentasi
+## API Reference & Documentation
 
-Dokumentasi interaktif lengkap beserta uji coba endpoint dapat diakses melalui Swagger UI pada:
+Complete interactive documentation with endpoint testing is available via Swagger UI at:
+
 👉 **`http://localhost:3000/api-docs`**
 
-### Autentikasi
+### Authentication
 
-Ada dua mekanisme proteksi:
+Two protection mechanisms are used:
 
-* **JWT (Bearer token):** dipakai oleh Todos, Categories, dan Logs. Dapatkan token dari `POST /api/auth/login`, lalu kirim lewat header `Authorization: Bearer <token>`.
-* **API Key:** dipakai oleh Stats. Kirim nilai `EXTERNAL_API_KEY` lewat header `x-api-key`.
+- **JWT (Bearer token):** Used by Todos, Categories, and Logs. Obtain a token from `POST /api/auth/login`, then send it via the `Authorization: Bearer <token>` header.
+- **API Key:** Used by Stats. Send the `EXTERNAL_API_KEY` value via the `x-api-key` header.
 
-### Daftar Endpoint
+### Endpoint List
 
-| Grup       | Method & Path                                                                                             | Proteksi  | Keterangan                                                                                  |
-| ---------- | --------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------- |
-| Auth       | `POST /api/auth/register`                                                                                 | -         | Daftar user baru (`name`, `email`, `password`). Mengembalikan `409` jika email sudah terdaftar |
-| Auth       | `POST /api/auth/login`                                                                                    | -         | Login dan mendapatkan JWT token                                                             |
-|| Todos      | `POST /api/todos`                                                                                         | JWT       | Buat todo baru (`title` wajib, `category` opsional)                                                                              |
-| Todos      | `GET /api/todos`                                                                                          | JWT       | Daftar todo milik user yang login (admin melihat todo semua user). Query: `page`, `limit` (maks 100), `search`, `completed`, `sortBy` (`createdAt`/`title`/`completed`), `order` |
-| Todos      | `GET /api/todos/:id`, `PUT /api/todos/:id`, `DELETE /api/todos/:id`                                       | JWT       | Detail, update, dan hapus todo. Mengembalikan `403` jika todo bukan milik user (kecuali admin), `404` jika tidak ditemukan |
-| Categories | `POST /api/categories`                                                                                    | JWT       | Buat kategori baru (nama harus unik, `409` jika sudah ada)                                                        |
-| Categories | `GET /api/categories`                                                                                     | JWT       | Daftar kategori. Query: `page`, `limit`, `search`, `sortBy` (`createdAt`/`name`), `order`   |
-| Categories | `GET /api/categories/:id`, `PUT /api/categories/:id`, `DELETE /api/categories/:id`                        | JWT       | Detail, update, dan hapus kategori                                                          |
-| Stats      | `GET /api/stats/summary`                                                                                  | API Key   | Ringkasan statistik: `totalTodos`, `completedTodos`, `pendingTodos`                         |
-| Logs       | `GET /api/logs`                                                                                           | JWT       | Admin melihat log semua user, user biasa hanya melihat log miliknya. Query: `page`, `limit`, `sortBy`, `order` |
+| Group       | Method & Path                                                                                              | Protection | Description                                                                                  |
+| ----------- | ---------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------- |
+| Auth        | `POST /api/auth/register`                                                                                  | -          | Register a new user (`name`, `email`, `password`). Returns `409` if email already exists     |
+| Auth        | `POST /api/auth/login`                                                                                     | -          | Login and receive a JWT token                                                                |
+| Todos       | `POST /api/todos`                                                                                          | JWT        | Create a new todo (`title` required, `category` optional)                                    |
+| Todos       | `GET /api/todos`                                                                                           | JWT        | List todos owned by the logged-in user (admin sees all users' todos). Query: `page`, `limit` (max 100), `search`, `completed`, `sortBy` (`createdAt`/`title`/`completed`), `order` |
+| Todos       | `GET /api/todos/:id`, `PUT /api/todos/:id`, `DELETE /api/todos/:id`                                        | JWT        | Detail, update, and delete a todo. Returns `403` if todo doesn't belong to user (except admin), `404` if not found |
+| Categories  | `POST /api/categories`                                                                                     | JWT        | Create a new category (name must be unique, `409` if duplicate)                              |
+| Categories  | `GET /api/categories`                                                                                      | JWT        | List categories. Query: `page`, `limit`, `search`, `sortBy` (`createdAt`/`name`), `order`    |
+| Categories  | `GET /api/categories/:id`, `PUT /api/categories/:id`, `DELETE /api/categories/:id`                         | JWT        | Detail, update, and delete a category                                                        |
+| Stats       | `GET /api/stats/summary`                                                                                   | API Key    | Summary statistics: `totalTodos`, `completedTodos`, `pendingTodos`                           |
+| Logs        | `GET /api/logs`                                                                                            | JWT        | Admin sees all users' logs; regular user sees only their own. Query: `page`, `limit`, `sortBy`, `order` |
 
-Detail request body dan contoh response tiap endpoint tersedia di Swagger UI.
+Detailed request bodies and response examples for each endpoint are available in Swagger UI.
