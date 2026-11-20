@@ -1,6 +1,8 @@
-# Todo List Management API
-
 <div align="center">
+
+# 📋 Todo List Management API
+
+<br>
 
 ![Node.js](https://img.shields.io/badge/Node.js-18.x+-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-5.x-000000?style=for-the-badge&logo=express&logoColor=white)
@@ -17,8 +19,7 @@ Built with a structured architecture (MVC + Service Layer) and equipped with JWT
 
 <br>
 
-[![View on GitHub](https://img.shields.io/badge/GitHub-Zer--D%2Ftodo--api-181717?style=flat-square&logo=github)](https://github.com/Zer-D/todo-api)
-[![Live Demo](https://img.shields.io/badge/Swagger_UI-Live_Demo-85EA2D?style=flat-square&logo=swagger)](http://localhost:3000/api-docs)
+🐛 [`Report Bug`](https://github.com/Zer-D/todo-api/issues)
 
 </div>
 
@@ -35,7 +36,6 @@ Built with a structured architecture (MVC + Service Layer) and equipped with JWT
 - [🏗 Architecture Overview](#architecture-overview)
 - [🧪 Testing](#testing)
 - [☁️ Deployment](#deployment)
-- [🗺 Roadmap](#roadmap)
 - [🤝 Contributing](#contributing)
 - [❓ FAQ](#faq)
 - [📄 License](#license)
@@ -77,19 +77,15 @@ Built with a structured architecture (MVC + Service Layer) and equipped with JWT
 
 ## 🛠 Tech Stack
 
-<div align="center">
-
 | Category | Technologies |
 |:--------:|:-------------|
-| **Runtime** | ![Node.js](https://img.shields.io/badge/Node.js-18.x+-339933?logo=node.js&logoColor=white) ![Express](https://img.shields.io/badge/Express-5.x-000000?logo=express&logoColor=white) |
-| **Database** | ![MongoDB](https://img.shields.io/badge/MongoDB-5.0+-47A248?logo=mongodb&logoColor=white) ![Mongoose](https://img.shields.io/badge/Mongoose-8.x-880000?logo=mongoose&logoColor=white) |
-| **Security** | ![bcryptjs](https://img.shields.io/badge/bcryptjs-3.x-green) ![jsonwebtoken](https://img.shields.io/badge/jsonwebtoken-9.x-orange) ![dotenv](https://img.shields.io/badge/dotenv-18.x-yellow) |
-| **Validation** | ![express-validator](https://img.shields.io/badge/express--validator-7.x-red) |
-| **Documentation** | ![Swagger](https://img.shields.io/badge/Swagger_UI-5.x-85EA2D?logo=swagger&logoColor=black) |
-| **Testing** | ![Jest](https://img.shields.io/badge/Jest-30.x-C21325?logo=jest&logoColor=white) ![Supertest](https://img.shields.io/badge/Supertest-7.x-blue) ![mongodb-memory-server](https://img.shields.io/badge/mongodb--memory--server-11.x-green) |
-| **Development** | ![Nodemon](https://img.shields.io/badge/Nodemon-3.x-76D04B?logo=nodemon&logoColor=white) |
-
-</div>
+| **Runtime** | Node.js 18.x+, Express 5.x |
+| **Database** | MongoDB 5.0+, Mongoose 8.x |
+| **Security** | bcryptjs 3.x, jsonwebtoken 9.x, dotenv 18.x |
+| **Validation** | express-validator 7.x |
+| **Documentation** | Swagger UI 5.x |
+| **Testing** | Jest 30.x, Supertest 7.x, mongodb-memory-server 11.x |
+| **Development** | Nodemon 3.x |
 
 ---
 
@@ -135,9 +131,9 @@ todo-api/
 
 | OS | Version |
 |:---|:--------|
-| ![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6?logo=windows&logoColor=white) | 64-bit |
-| ![Linux](https://img.shields.io/badge/Linux-Ubuntu%2C_Debian%2C_Fedora%2C_Arch-FCC624?logo=linux&logoColor=black) | Any 64-bit distribution |
-| ![macOS](https://img.shields.io/badge/macOS-10.15%2B-000000?logo=apple&logoColor=white) | Catalina or later (Apple Silicon & Intel) |
+| Windows 10/11 | 64-bit |
+| Linux (Ubuntu, Debian, Fedora, Arch) | Any 64-bit distribution |
+| macOS 10.15+ | Catalina or later (Apple Silicon & Intel) |
 
 ### Software Dependencies
 
@@ -162,6 +158,9 @@ npm install
 ```
 
 ### 2. Configure Environment
+
+<details>
+<summary><b>📋 View Environment Variables</b></summary>
 
 ```bash
 # Linux / macOS
@@ -196,6 +195,8 @@ EXTERNAL_API_KEY=your-external-api-key-here
 > ```bash
 > node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 > ```
+
+</details>
 
 ### 3. Run the Application
 
@@ -270,21 +271,6 @@ This project is **Vercel-ready** with `vercel.json` and `api/index.js`.
   ]
 }
 ```
-
----
-
-## 🗺 Roadmap
-
-- [x] JWT Authentication & RBAC
-- [x] Todo & Category CRUD
-- [x] Activity Logging
-- [x] Stats Endpoint with API Key
-- [x] Swagger UI Documentation
-- [x] Integration Testing (55 tests)
-- [ ] Pagination & filtering improvements
-- [ ] Email verification & password reset
-- [ ] Docker support
-- [ ] CI/CD with GitHub Actions
 
 ---
 
