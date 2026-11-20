@@ -1,107 +1,123 @@
 # Todo List Management API
 
-A production-ready REST API for managing todo lists, categories, and activity logs. Built with a structured architecture (MVC + Service Layer) and equipped with JWT authentication, role-based access control (RBAC), input validation, automated testing, and interactive Swagger UI documentation.
+<div align="center">
 
-## Table of Contents
+![Node.js](https://img.shields.io/badge/Node.js-18.x+-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5.x-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-5.0+-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
+![Tests](https://img.shields.io/badge/Tests-55%20passing-brightgreen?style=for-the-badge&logo=jest&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Environment Variables](#environment-variables)
-- [Running the Project](#running-the-project)
-- [Running Tests](#running-tests)
-- [Deployment (Vercel)](#deployment-vercel)
-- [API Reference & Documentation](#api-reference--documentation)
+**A production-ready REST API for managing todo lists, categories, and activity logs.**
 
-## Features
+Built with a structured architecture (MVC + Service Layer) and equipped with JWT authentication, role-based access control (RBAC), input validation, automated testing, and interactive Swagger UI documentation.
 
-- **Authentication & Authorization:** Register & Login using JSON Web Tokens (JWT) with role-based access (`user` & `admin`).
-- **Todo & Category Management:** Full CRUD operations for Todos (with data ownership) and Categories.
-- **Activity Log:** Automatic logging of user data mutations to the database. Admins can view logs for all users; regular users see only their own logs.
-- **Stats with API Key:** Summary statistics endpoint (total, completed, pending) for external integrations, protected by `x-api-key` header (not JWT).
-- **Security & Validation:** Global error handling, logging, and strict input validation with `express-validator`.
-- **Automated Testing:** Integration tests with Jest & Supertest using an in-memory MongoDB database.
-- **Documentation:** Interactive API documentation with Swagger UI.
+[![View on GitHub](https://img.shields.io/badge/GitHub-Zer--D%2Ftodo--api-181717?style=flat-square&logo=github)](https://github.com/Zer-D/todo-api)
+[![Live Demo](https://img.shields.io/badge/Swagger_UI-Live_Demo-85EA2D?style=flat-square&logo=swagger)](http://localhost:3000/api-docs)
 
-## Tech Stack
+</div>
 
-- **Core:** Node.js, Express 5, CORS
-- **Database:** MongoDB, Mongoose
-- **Security:** bcryptjs, jsonwebtoken, dotenv
-- **Validation:** express-validator
-- **Documentation:** swagger-jsdoc, swagger-ui-express
-- **Testing:** Jest, Supertest, mongodb-memory-server
-- **Development:** Nodemon
+---
 
-## Project Structure
+## ✨ Features
+
+| Feature | Description |
+|---------|-------------|
+| 🔐 **Authentication & Authorization** | Register & Login using JSON Web Tokens (JWT) with role-based access (`user` & `admin`) |
+| 📝 **Todo & Category Management** | Full CRUD operations for Todos (with data ownership) and Categories |
+| 📊 **Activity Log** | Automatic logging of user data mutations. Admins see all logs; users see only their own |
+| 📈 **Stats with API Key** | Summary statistics endpoint for external integrations, protected by `x-api-key` header |
+| 🛡️ **Security & Validation** | Global error handling, request logging, and strict input validation with `express-validator` |
+| 🧪 **Automated Testing** | 55 integration tests with Jest & Supertest using in-memory MongoDB |
+| 📚 **Interactive Documentation** | Swagger UI with live endpoint testing at `/api-docs` |
+
+---
+
+## 🛠 Tech Stack
+
+<div align="center">
+
+| Category | Technologies |
+|----------|--------------|
+| **Runtime** | ![Node.js](https://img.shields.io/badge/Node.js-18.x+-339933?logo=node.js&logoColor=white) ![Express](https://img.shields.io/badge/Express-5.x-000000?logo=express&logoColor=white) |
+| **Database** | ![MongoDB](https://img.shields.io/badge/MongoDB-5.0+-47A248?logo=mongodb&logoColor=white) ![Mongoose](https://img.shields.io/badge/Mongoose-8.x-880000?logo=mongoose&logoColor=white) |
+| **Security** | ![bcryptjs](https://img.shields.io/badge/bcryptjs-3.x-green) ![jsonwebtoken](https://img.shields.io/badge/jsonwebtoken-9.x-orange) ![dotenv](https://img.shields.io/badge/dotenv-18.x-yellow) |
+| **Validation** | ![express-validator](https://img.shields.io/badge/express--validator-7.x-red) |
+| **Documentation** | ![Swagger](https://img.shields.io/badge/Swagger_UI-5.x-85EA2D?logo=swagger&logoColor=black) |
+| **Testing** | ![Jest](https://img.shields.io/badge/Jest-30.x-C21325?logo=jest&logoColor=white) ![Supertest](https://img.shields.io/badge/Supertest-7.x-blue) ![mongodb-memory-server](https://img.shields.io/badge/mongodb--memory--server-11.x-green) |
+| **Development** | ![Nodemon](https://img.shields.io/badge/Nodemon-3.x-76D04B?logo=nodemon&logoColor=white) |
+
+</div>
+
+---
+
+## 📁 Project Structure
 
 ```
 todo-api/
 ├── api/
-│   └── index.js          # Serverless entry point for Vercel deployment
+│   └── index.js              # 🚀 Serverless entry point (Vercel)
 ├── src/
-│   ├── config/           # Database (db.js) & Swagger (swagger.js) configuration
-│   ├── controllers/      # Controller logic (auth, todo, category, stats, log)
-│   ├── middlewares/      # API key, auth, restrictTo (role), error handler, logger, validate, notFound
-│   ├── models/           # Mongoose schemas (user, todo, category, log)
-│   ├── routes/           # Router for each API endpoint
-│   ├── services/         # Business logic / service layer (auth, todo, category, log)
-│   ├── utils/            # Utility functions (AppError, catchAsync)
-│   ├── validators/       # express-validator schemas (todo, category)
-│   ├── app.js            # Main Express setup
-│   └── server.js         # Local application entry point
-├── tests/
-│   ├── setup.js          # Test setup (in-memory database)
-│   ├── auth.test.js      # Authentication tests
-│   ├── todo.test.js      # Todo tests
-│   ├── category.test.js  # Category tests
-│   ├── log.test.js       # Activity log tests
-│   └── stats.test.js     # Statistics tests
-├── .env.example          # Example environment variables (copy to .env)
+│   ├── config/               # ⚙️  DB & Swagger configuration
+│   ├── controllers/          # 🎯 Request handlers (auth, todo, category, stats, log)
+│   ├── middlewares/          # 🔒 Auth, RBAC, validation, error handling, logging
+│   ├── models/               # 🗄️  Mongoose schemas (User, Todo, Category, Log)
+│   ├── routes/               # 🛣️  API route definitions
+│   ├── services/             # 💼 Business logic layer
+│   ├── utils/                # 🛠️  AppError, catchAsync utilities
+│   ├── validators/           # ✅ express-validator schemas
+│   ├── app.js                # 📦 Express application setup
+│   └── server.js             # 🏁 Local entry point
+├── tests/                    # 🧪 Test suite (55 tests)
+│   ├── setup.js              # In-memory MongoDB setup
+│   ├── auth.test.js
+│   ├── todo.test.js
+│   ├── category.test.js
+│   ├── log.test.js
+│   └── stats.test.js
+├── .env.example              # 📋 Environment template
 ├── .gitignore
-├── jest.config.js        # Jest configuration
+├── jest.config.js
 ├── package.json
-├── vercel.json           # Vercel deployment configuration
+├── vercel.json               # ☁️ Vercel deployment config
 └── README.md
 ```
 
-> The `.env` file is created locally from `.env.example` and is not committed to the repository.
+> 💡 The `.env` file is created locally from `.env.example` and is **not** committed to the repository.
 
-## Requirements
+---
 
-### Compatible Operating Systems
+## 📋 Requirements
 
-- **Windows:** Windows 10 / 11 (64-bit)
-- **Linux:** Ubuntu, Debian, Fedora, Arch Linux (or any 64-bit Linux distribution)
-- **macOS:** macOS 10.15 (Catalina) or later (Apple Silicon & Intel)
+### Operating Systems
+| OS | Version |
+|----|---------|
+| ![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6?logo=windows&logoColor=white) | 64-bit |
+| ![Linux](https://img.shields.io/badge/Linux-Ubuntu%2C_Debian%2C_Fedora%2C_Arch-FCC624?logo=linux&logoColor=black) | Any 64-bit distribution |
+| ![macOS](https://img.shields.io/badge/macOS-10.15%2B-000000?logo=apple&logoColor=white) | Catalina or later (Apple Silicon & Intel) |
 
-### Software
+### Software Dependencies
+| Tool | Version | Required For |
+|------|---------|--------------|
+| [Node.js](https://nodejs.org/) | 18.x+ | Application runtime |
+| [MongoDB](https://www.mongodb.com/) | 5.0+ | Database (local or Atlas) |
+| Git | Latest | Version control (optional) |
 
-- [Node.js](https://nodejs.org/) (version 18.x or later recommended)
-- MongoDB (Local database v5.0+ or MongoDB Atlas cloud service) — required for running the application, **not** for running tests
-- Git (optional, for version control)
+> ⚠️ **MongoDB is required for running the application, NOT for running tests** (tests use in-memory MongoDB).
 
-## Installation
+---
 
-1. Clone the repository:
+## 🚀 Quick Start
 
-   ```bash
-   git clone https://github.com/Zer-D/todo-api.git
-   cd todo-api
-   ```
+### 1. Clone & Install
+```bash
+git clone https://github.com/Zer-D/todo-api.git
+cd todo-api
+npm install
+```
 
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-## Environment Variables
-
-Copy the example `.env.example` file to `.env` in the project root:
-
+### 2. Configure Environment
 ```bash
 # Linux / macOS
 cp .env.example .env
@@ -110,102 +126,283 @@ cp .env.example .env
 copy .env.example .env
 ```
 
-Then adjust the values. Default contents of `.env.example`:
-
+Edit `.env` with your values:
 ```env
 PORT=3000
 MONGODB_URI=mongodb://127.0.0.1:27017/todo_api_db
 NODE_ENV=development
-JWT_SECRET=replace-with-your-own-secret
+JWT_SECRET=your-super-secret-key-here
 JWT_EXPIRES_IN=1d
-EXTERNAL_API_KEY=replace-with-your-own-api-key
+EXTERNAL_API_KEY=your-external-api-key-here
 ```
 
-| Variable            | Description                                                                                                 |
-| ------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `PORT`              | Server port                                                                                                 |
-| `MONGODB_URI`       | MongoDB connection string. Default for local database; for MongoDB Atlas use `mongodb+srv://...` URI       |
-| `NODE_ENV`          | Application mode (`development` or `production`)                                                            |
-| `JWT_SECRET`        | Secret key for signing JWT tokens. **Replace with a long random value in production**                       |
-| `JWT_EXPIRES_IN`    | Token expiration time (e.g., `1d`)                                                                          |
-| `EXTERNAL_API_KEY`  | API key for `GET /api/stats/summary`, sent via `x-api-key` header                                           |
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `PORT` | Server port | `3000` |
+| `MONGODB_URI` | MongoDB connection string | `mongodb://127.0.0.1:27017/todo_api_db` |
+| `NODE_ENV` | Application mode | `development` / `production` |
+| `JWT_SECRET` | **Secret for signing JWT tokens** | `long-random-string-256-bit` |
+| `JWT_EXPIRES_IN` | Token expiration | `1d`, `7d`, `30d` |
+| `EXTERNAL_API_KEY` | API key for stats endpoint | `external-api-key-123` |
 
-> ⚠️ Never commit a `.env` file containing real credentials.
+> ⚠️ **Never commit a `.env` file containing real credentials!** Generate a strong `JWT_SECRET` for production:
+> ```bash
+> node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+> ```
 
-## Running the Project
+### 3. Run the Application
+```bash
+# Development (with auto-reload)
+npm run dev
 
-- **Development Mode** (with Nodemon auto-reload):
+# Production
+npm start
+```
 
-  ```bash
-  npm run dev
-  ```
+🌐 **Access:** `http://localhost:3000`  
+📚 **Swagger UI:** `http://localhost:3000/api-docs`
 
-- **Production Mode**:
+---
 
-  ```bash
-  npm start
-  ```
-
-Access the application via browser or Postman at: `http://localhost:3000`
-
-## Running Tests
-
-This project uses **Jest** and **Supertest** for API endpoint testing, with **mongodb-memory-server** as a temporary database so tests don't touch your actual database.
+## 🧪 Running Tests
 
 ```bash
 npm test
 ```
 
-This runs `jest --runInBand --detectOpenHandles`, executing tests sequentially and reporting any unclosed connections.
+Runs **55 integration tests** with Jest & Supertest using `mongodb-memory-server` (no real database needed).
 
-Before running tests, create a `.env.test` file in the project root (loaded by `tests/setup.js`). Minimum required values:
-
+### Test Requirements
+Create `.env.test` in project root:
 ```env
 JWT_SECRET=test-secret-key
 JWT_EXPIRES_IN=1d
 EXTERNAL_API_KEY=test-api-key
 ```
 
-> `MONGODB_URI` is not required as tests use an in-memory database.
+> `MONGODB_URI` not required — tests use in-memory MongoDB.
 
-Test coverage is located in the `tests/` folder: `auth.test.js` (authentication), `todo.test.js` (todos), `category.test.js` (categories), `log.test.js` (activity logs), and `stats.test.js` (statistics), with `setup.js` as shared configuration.
+### Test Coverage
+| Test File | Coverage |
+|-----------|----------|
+| `auth.test.js` | Authentication (register, login, duplicate handling) |
+| `todo.test.js` | Todo CRUD, ownership, pagination, filtering |
+| `category.test.js` | Category CRUD, uniqueness, search, sorting |
+| `log.test.js` | Activity logs, RBAC, pagination, sorting |
+| `stats.test.js` | Stats endpoint with API key protection |
 
-> On first run, `mongodb-memory-server` downloads the MongoDB binary automatically, requiring an internet connection.
+> 📥 First run downloads MongoDB binary automatically (requires internet).
 
-## Deployment (Vercel)
+---
 
-This project includes `vercel.json` and `api/index.js` for deployment to [Vercel](https://vercel.com/) as a serverless function.
+## ☁️ Deployment (Vercel)
 
-1. Import the repository to Vercel.
-2. Add all environment variables (see [Environment Variables](#environment-variables)) in **Project Settings → Environment Variables**.
-3. Deploy. For the database, use MongoDB Atlas since local databases are not accessible from Vercel.
+This project is **Vercel-ready** with `vercel.json` and `api/index.js`.
 
-## API Reference & Documentation
+### Deploy Steps
+1. **Import** repository to [Vercel](https://vercel.com/)
+2. **Add Environment Variables** in Project Settings → Environment Variables
+3. **Deploy** — Use **MongoDB Atlas** (local DB not accessible from Vercel)
 
-Complete interactive documentation with endpoint testing is available via Swagger UI at:
+### Vercel Config Highlights
+```json
+{
+  "buildCommand": "npm install",
+  "outputDirectory": ".",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": null,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index.js" }
+  ]
+}
+```
 
-👉 **`http://localhost:3000/api-docs`**
+---
 
-### Authentication
+## 📖 API Reference
 
-Two protection mechanisms are used:
+### 🔗 Interactive Documentation
+**Swagger UI:** `http://localhost:3000/api-docs`
 
-- **JWT (Bearer token):** Used by Todos, Categories, and Logs. Obtain a token from `POST /api/auth/login`, then send it via the `Authorization: Bearer <token>` header.
-- **API Key:** Used by Stats. Send the `EXTERNAL_API_KEY` value via the `x-api-key` header.
+### 🔐 Authentication Methods
 
-### Endpoint List
+| Method | Used By | Header |
+|--------|---------|--------|
+| **JWT (Bearer)** | Todos, Categories, Logs | `Authorization: Bearer <token>` |
+| **API Key** | Stats | `x-api-key: <EXTERNAL_API_KEY>` |
 
-| Group       | Method & Path                                                                                              | Protection | Description                                                                                  |
-| ----------- | ---------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------- |
-| Auth        | `POST /api/auth/register`                                                                                  | -          | Register a new user (`name`, `email`, `password`). Returns `409` if email already exists     |
-| Auth        | `POST /api/auth/login`                                                                                     | -          | Login and receive a JWT token                                                                |
-| Todos       | `POST /api/todos`                                                                                          | JWT        | Create a new todo (`title` required, `category` optional)                                    |
-| Todos       | `GET /api/todos`                                                                                           | JWT        | List todos owned by the logged-in user (admin sees all users' todos). Query: `page`, `limit` (max 100), `search`, `completed`, `sortBy` (`createdAt`/`title`/`completed`), `order` |
-| Todos       | `GET /api/todos/:id`, `PUT /api/todos/:id`, `DELETE /api/todos/:id`                                        | JWT        | Detail, update, and delete a todo. Returns `403` if todo doesn't belong to user (except admin), `404` if not found |
-| Categories  | `POST /api/categories`                                                                                     | JWT        | Create a new category (name must be unique, `409` if duplicate)                              |
-| Categories  | `GET /api/categories`                                                                                      | JWT        | List categories. Query: `page`, `limit`, `search`, `sortBy` (`createdAt`/`name`), `order`    |
-| Categories  | `GET /api/categories/:id`, `PUT /api/categories/:id`, `DELETE /api/categories/:id`                         | JWT        | Detail, update, and delete a category                                                        |
-| Stats       | `GET /api/stats/summary`                                                                                   | API Key    | Summary statistics: `totalTodos`, `completedTodos`, `pendingTodos`                           |
-| Logs        | `GET /api/logs`                                                                                            | JWT        | Admin sees all users' logs; regular user sees only their own. Query: `page`, `limit`, `sortBy`, `order` |
+### 📋 Endpoints Overview
 
-Detailed request bodies and response examples for each endpoint are available in Swagger UI.
+<details>
+<summary><b>🔐 Auth Endpoints</b></summary>
+
+| Method | Endpoint | Protection | Description |
+|--------|----------|------------|-------------|
+| `POST` | `/api/auth/register` | — | Register new user (`name`, `email`, `password`) |
+| `POST` | `/api/auth/login` | — | Login & receive JWT token |
+
+</details>
+
+<details>
+<summary><b>📝 Todo Endpoints</b></summary>
+
+| Method | Endpoint | Protection | Description |
+|--------|----------|------------|-------------|
+| `POST` | `/api/todos` | JWT | Create todo (`title` required, `category` optional) |
+| `GET` | `/api/todos` | JWT | List user's todos (admin sees all) with pagination, search, filter |
+| `GET` | `/api/todos/:id` | JWT | Get single todo |
+| `PUT` | `/api/todos/:id` | JWT | Update todo |
+| `DELETE` | `/api/todos/:id` | JWT | Delete todo |
+
+**Query Parameters (GET /api/todos):**
+- `page`, `limit` (max 100), `search`, `completed` (boolean)
+- `sortBy`: `createdAt` \| `title` \| `completed`
+- `order`: `asc` \| `desc`
+
+</details>
+
+<details>
+<summary><b>📂 Category Endpoints</b></summary>
+
+| Method | Endpoint | Protection | Description |
+|--------|----------|------------|-------------|
+| `POST` | `/api/categories` | JWT | Create category (unique name) |
+| `GET` | `/api/categories` | JWT | List categories with pagination & search |
+| `GET` | `/api/categories/:id` | JWT | Get single category |
+| `PUT` | `/api/categories/:id` | JWT | Update category |
+| `DELETE` | `/api/categories/:id` | JWT | Delete category |
+
+</details>
+
+<details>
+<summary><b>📊 Stats Endpoint</b></summary>
+
+| Method | Endpoint | Protection | Description |
+|--------|----------|------------|-------------|
+| `GET` | `/api/stats/summary` | API Key | Summary: `totalTodos`, `completedTodos`, `pendingTodos` |
+
+</details>
+
+<details>
+<summary><b>📜 Log Endpoints</b></summary>
+
+| Method | Endpoint | Protection | Description |
+|--------|----------|------------|-------------|
+| `GET` | `/api/logs` | JWT | Admin: all logs; User: own logs only |
+
+</details>
+
+---
+
+## 💡 Usage Examples
+
+### Register & Login
+```bash
+# Register
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Doe","email":"john@example.com","password":"secret123"}'
+
+# Login
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john@example.com","password":"secret123"}'
+
+# Response: { "success": true, "data": { "user": {...}, "token": "eyJhbGciOi..." } }
+```
+
+### Create Todo (with JWT)
+```bash
+curl -X POST http://localhost:3000/api/todos \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{"title":"Learn Swagger","description":"Write API docs","category":"CAT_ID"}'
+```
+
+### Get Stats (with API Key)
+```bash
+curl -X GET http://localhost:3000/api/stats/summary \
+  -H "x-api-key: YOUR_EXTERNAL_API_KEY"
+```
+
+---
+
+## 🏗 Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Client Request                         │
+└─────────────────────┬───────────────────────────────────────┘
+                      ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Middleware Layer                         │
+│  • Logger  • CORS  • Body Parser  • Auth (JWT/API Key)     │
+│  • Validation  • Role Check (RBAC)  • Error Handler        │
+└─────────────────────┬───────────────────────────────────────┘
+                      ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Route Layer                            │
+│  /api/auth  •  /api/todos  •  /api/categories              │
+│  /api/stats  •  /api/logs                                   │
+└─────────────────────┬───────────────────────────────────────┘
+                      ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Controller Layer                         │
+│  Request handling → Validation → Service calls → Response  │
+└─────────────────────┬───────────────────────────────────────┘
+                      ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     Service Layer                           │
+│  Business logic • Data transformation • External calls     │
+└─────────────────────┬───────────────────────────────────────┘
+                      ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Model Layer                            │
+│  Mongoose Models: User • Todo • Category • Log             │
+└─────────────────────┬───────────────────────────────────────┘
+                      ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      Database                               │
+│                    MongoDB / Atlas                          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+- Write tests for new features
+- Follow existing code style (ESLint + Prettier)
+- Update documentation for API changes
+- Ensure all 55 tests pass before PR
+
+---
+
+## 📄 License
+
+Distributed under the **MIT License**. See `LICENSE` for more information.
+
+---
+
+## 👨‍💻 Author
+
+**Zer-D** — [GitHub](https://github.com/Zer-D) • [Project Repository](https://github.com/Zer-D/todo-api)
+
+---
+
+<div align="center">
+
+**Built with ❤️ using Node.js, Express, MongoDB & modern best practices**
+
+[![Star this repo](https://img.shields.io/github/stars/Zer-D/todo-api?style=social)](https://github.com/Zer-D/todo-api)
+[![Fork this repo](https://img.shields.io/github/forks/Zer-D/todo-api?style=social)](https://github.com/Zer-D/todo-api/fork)
+
+</div>
