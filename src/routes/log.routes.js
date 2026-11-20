@@ -9,7 +9,7 @@ router.use(protect);
  * @swagger
  * /api/logs:
  *   get:
- *     summary: Mengambil daftar activity logs (Admin melihat semua, User melihat miliknya sendiri)
+ *     summary: Get activity logs list (Admin sees all, User sees own logs)
  *     tags: [Logs]
  *     security:
  *       - bearerAuth: []
@@ -18,28 +18,28 @@ router.use(protect);
  *         name: page
  *         schema:
  *           type: integer
- *         description: Nomor halaman
+ *         description: Page number
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Jumlah data per halaman
+ *         description: Number of items per page
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
- *         description: Kolom acuan sorting (misal createdAt)
+ *         description: Sort field (e.g., createdAt)
  *       - in: query
  *         name: order
  *         schema:
  *           type: string
  *           enum: [asc, desc]
- *         description: Urutan sorting
+ *         description: Sort direction
  *     responses:
  *       200:
- *         description: Daftar activity logs berhasil diambil
+ *         description: Activity logs retrieved successfully
  *       401:
- *         description: Unauthorized (Token tidak valid/tidak ada)
+ *         description: Unauthorized (Invalid or missing token)
  */
 router.get("/", logController.getAllLogs);
 

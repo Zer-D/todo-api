@@ -4,9 +4,9 @@ const options = {
     definition: {
         openapi: "3.0.0",
         info: {
-            title: "Todo List API",
+            title: "Todo List Management API",
             version: "1.0.0",
-            description: "Dokumentasi API Todo List — dibangun bertahap dari seri artikel backend Node.js",
+            description: "API documentation for Todo List Management — built with Node.js, Express, and MongoDB",
         },
         servers: [
             {
@@ -41,8 +41,8 @@ const options = {
                     type: "object",
                     properties: {
                         _id: { type: "string", example: "665f1b2c8b1e2a1a2c3d2222" },
-                        name: { type: "string", example: "Pekerjaan" },
-                        description: { type: "string", example: "Tugas harian terkait kantor" },
+                        name: { type: "string", example: "Work" },
+                        description: { type: "string", example: "Daily tasks related to office work" },
                         created_by: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
                         updated_by: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
                         archived: { type: "boolean", example: false },
@@ -54,8 +54,8 @@ const options = {
                     type: "object",
                     properties: {
                         _id: { type: "string", example: "665f1c2e8b1e2a1a2c3d4e5f" },
-                        title: { type: "string", example: "Belajar Swagger" },
-                        description: { type: "string", example: "Menulis dokumentasi endpoint todo" },
+                        title: { type: "string", example: "Learn Swagger" },
+                        description: { type: "string", example: "Write API documentation for todo endpoints" },
                         completed: { type: "boolean", example: false },
                         category: { type: "string", example: "665f1b2c8b1e2a1a2c3d2222" },
                         owner: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
@@ -72,7 +72,7 @@ const options = {
                         _id: { type: "string", example: "665f1d2e8b1e2a1a2c3d6789" },
                         user: { type: "string", example: "665f1a2b8b1e2a1a2c3d1111" },
                         action: { type: "string", example: "CREATE_TODO" },
-                        description: { type: "string", example: "User membuat todo baru: 'Belajar Swagger'" },
+                        description: { type: "string", example: "User created a new todo: 'Learn Swagger'" },
                         createdAt: { type: "string", format: "date-time" },
                     },
                 },

@@ -1,22 +1,22 @@
 const request = require("supertest");
 const app = require("../src/app");
 
-async function registerAndLogin(email = "budi@example.com") {
+async function registerAndLogin(email = "john@example.com") {
     await request(app).post("/api/auth/register").send({
-        name: "Budi",
+        name: "John",
         email,
-        password: "rahasia123",
+        password: "secret123",
     });
 
     const loginRes = await request(app).post("/api/auth/login").send({
         email,
-        password: "rahasia123",
+        password: "secret123",
     });
 
     return loginRes.body.data.token;
 }
 
-async function createCategory(token, name = "Pekerjaan") {
+async function createCategory(token, name = "Work") {
     const res = await request(app)
     .post("/api/categories")
     .set("Authorization", `Bearer ${token}`)
@@ -39,10 +39,10 @@ describe("Todo Endpoints", () => {
             const res = await request(app)
             .post("/api/todos")
             .set("Authorization", `Bearer ${token}`)
-            .send({ title: "Belajar Jest dan Supertest", category: categoryId });
+            .send({ title: "Learn Jest and Supertest", category: categoryId });
 
             expect(res.statusCode).toBe(201);
-            expect(res.body.data.title).toBe("Belajar Jest dan Supertest");
+            expect(res.body.data.title).toBe("Learn Jest and Supertest");
             expect(res.body.data.completed).toBe(false);
             expect(res.body.data.category).toBe(categoryId);
         });
@@ -50,7 +50,7 @@ describe("Todo Endpoints", () => {
         it("should reject creating todo without authentication", async () => {
             const res = await request(app)
             .post("/api/todos")
-            .send({ title: "Tanpa token", category: categoryId });
+            .send({ title: "Without token", category: categoryId });
 
             expect(res.statusCode).toBe(401);
         });
@@ -69,10 +69,10 @@ describe("Todo Endpoints", () => {
             const res = await request(app)
                 .post("/api/todos")
                 .set("Authorization", `Bearer ${token}`)
-                .send({ title: "Todo tanpa kategori" });
+                .send({ title: "Todo without category" });
 
             expect(res.statusCode).toBe(201);
-            expect(res.body.data.title).toBe("Todo tanpa kategori");
+            expect(res.body.data.title).toBe("Todo without category");
             expect(res.body.data.category).toBeUndefined();
         });
 
@@ -80,7 +80,7 @@ describe("Todo Endpoints", () => {
             const res = await request(app)
                 .post("/api/todos")
                 .set("Authorization", `Bearer ${token}`)
-                .send({ title: "Todo kategori salah", category: "abc" });
+                .send({ title: "Todo with invalid category", category: "abc" });
 
             expect(res.statusCode).toBe(400);
             expect(res.body.message).toMatch(/invalid category id/i);
@@ -91,7 +91,7 @@ describe("Todo Endpoints", () => {
             const res = await request(app)
                 .post("/api/todos")
                 .set("Authorization", `Bearer ${token}`)
-                .send({ title: "Todo dengan kategori tidak ada", category: fakeCategoryId });
+                .send({ title: "Todo with non-existent category", category: fakeCategoryId });
 
             expect(res.statusCode).toBe(404);
             expect(res.body.message).toMatch(/category not found/i);
@@ -104,7 +104,7 @@ describe("Todo Endpoints", () => {
                 await request(app)
                 .post("/api/todos")
                 .set("Authorization", `Bearer ${token}`)
-                .send({ title: `Todo ke-${i}`, category: categoryId });
+                .send({ title: `Todo ${i}`, category: categoryId });
             }
 
             const res = await request(app)
@@ -121,9 +121,9 @@ describe("Todo Endpoints", () => {
             await request(app)
             .post("/api/todos")
             .set("Authorization", `Bearer ${token}`)
-            .send({ title: "Todo milik Budi", category: categoryId });
+            .send({ title: "John's todo", category: categoryId });
 
-            const otherToken = await registerAndLogin("siti@example.com");
+            const otherToken = await registerAndLogin("jane@example.com");
 
             const res = await request(app)
             .get("/api/todos")
@@ -139,10 +139,10 @@ describe("Todo Endpoints", () => {
             const createRes = await request(app)
             .post("/api/todos")
             .set("Authorization", `Bearer ${token}`)
-            .send({ title: "Todo milik Budi", category: categoryId });
+            .send({ title: "John's todo", category: categoryId });
 
             const todoId = createRes.body.data._id;
-            const otherToken = await registerAndLogin("siti@example.com");
+            const otherToken = await registerAndLogin("jane@example.com");
 
             const res = await request(app)
             .delete(`/api/todos/${todoId}`)

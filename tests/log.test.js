@@ -9,7 +9,7 @@ async function registerAndLogin(email, role = "user") {
     await request(app).post("/api/auth/register").send({
         name: role === "admin" ? "Admin" : "User",
         email,
-        password: "rahasia123",
+        password: "secret123",
     });
 
     if (role !== "user") {
@@ -18,7 +18,7 @@ async function registerAndLogin(email, role = "user") {
 
     const loginRes = await request(app).post("/api/auth/login").send({
         email,
-        password: "rahasia123",
+        password: "secret123",
     });
 
     const user = await User.findOne({ email });
@@ -33,7 +33,7 @@ async function seedLogs(userId, label, count) {
         await Log.create({
             user: userId,
             action: `SEED_${label}_${i}`,
-            description: `Log seed ${label} ke-${i}`,
+            description: `Seed log ${label} #${i}`,
             createdAt: new Date(Date.UTC(2026, 0, 1, 0, 0, i)),
         });
     }
@@ -48,8 +48,8 @@ describe("Log Endpoints", () => {
     let admin;
 
     beforeEach(async () => {
-        userA = await registerAndLogin("budi@example.com");
-        userB = await registerAndLogin("siti@example.com");
+        userA = await registerAndLogin("john@example.com");
+        userB = await registerAndLogin("jane@example.com");
         admin = await registerAndLogin("admin@example.com", "admin");
     });
 
@@ -103,7 +103,7 @@ describe("Log Endpoints", () => {
 
             const [log] = seedOnly(res.body.data, "A");
 
-            expect(log.user.email).toBe("budi@example.com");
+            expect(log.user.email).toBe("john@example.com");
             expect(log.user.role).toBe("user");
             expect(log.user.name).toBeDefined();
             expect(log.user.password).toBeUndefined();
@@ -165,7 +165,7 @@ describe("Log Endpoints", () => {
             await request(app)
             .post("/api/categories")
             .set("Authorization", `Bearer ${userA.token}`)
-            .send({ name: "Teknologi" });
+            .send({ name: "Technology" });
 
             const res = await request(app)
             .get("/api/logs?limit=100")
@@ -174,8 +174,8 @@ describe("Log Endpoints", () => {
             const log = res.body.data.find((l) => l.action === "CREATE_CATEGORY");
 
             expect(log).toBeDefined();
-            expect(log.description).toContain("Teknologi");
-            expect(log.user.email).toBe("budi@example.com");
+            expect(log.description).toContain("Technology");
+            expect(log.user.email).toBe("john@example.com");
         });
     });
 });

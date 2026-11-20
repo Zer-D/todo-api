@@ -16,7 +16,7 @@ router.use(protect);
  * @swagger
  * /api/categories:
  *   post:
- *     summary: Membuat kategori baru (wajib login)
+ *     summary: Create a new category (requires login)
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -31,13 +31,13 @@ router.use(protect);
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Teknologi"
+ *                 example: "Technology"
  *               description:
  *                 type: string
- *                 example: "Kategori seputar dunia teknologi dan programming"
+ *                 example: "Category for technology and programming topics"
  *     responses:
  *       201:
- *         description: Kategori berhasil dibuat
+ *         description: Category created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -48,13 +48,13 @@ router.use(protect);
  *                 data:
  *                   $ref: '#/components/schemas/Category'
  *       400:
- *         description: Validasi gagal (misal nama kosong)
+ *         description: Validation failed (e.g., name empty)
  *       401:
  *         description: Unauthorized
  *       409:
- *         description: Nama kategori sudah ada
+ *         description: Category name already exists
  *   get:
- *     summary: Mengambil daftar kategori (dengan pagination & search)
+ *     summary: Get category list (with pagination & search)
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -63,32 +63,32 @@ router.use(protect);
  *         name: page
  *         schema:
  *           type: integer
- *         description: Nomor halaman
+ *         description: Page number
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Jumlah data per halaman
+ *         description: Number of items per page
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Kata kunci pencarian berdasarkan nama kategori
+ *         description: Search keyword based on category name
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
  *           enum: [createdAt, name]
- *         description: Field acuan sorting
+ *         description: Field to sort by
  *       - in: query
  *         name: order
  *         schema:
  *           type: string
  *           enum: [asc, desc]
- *         description: Urutan sorting
+ *         description: Sort direction
  *     responses:
  *       200:
- *         description: Daftar kategori berhasil diambil
+ *         description: Category list retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -112,7 +112,7 @@ router.get("/", getAllCategoriesRules, validate, categoryController.getAllCatego
  * @swagger
  * /api/categories/{id}:
  *   get:
- *     summary: Mengambil satu kategori berdasarkan ID
+ *     summary: Get a single category by ID
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -122,10 +122,10 @@ router.get("/", getAllCategoriesRules, validate, categoryController.getAllCatego
  *         required: true
  *         schema:
  *           type: string
- *         description: ID Kategori
+ *         description: Category ID
  *     responses:
  *       200:
- *         description: Kategori ditemukan
+ *         description: Category found
  *         content:
  *           application/json:
  *             schema:
@@ -136,9 +136,9 @@ router.get("/", getAllCategoriesRules, validate, categoryController.getAllCatego
  *                 data:
  *                   $ref: '#/components/schemas/Category'
  *       404:
- *         description: Kategori tidak ditemukan
+ *         description: Category not found
  *   put:
- *     summary: Mengupdate kategori berdasarkan ID
+ *     summary: Update a category by ID
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -157,16 +157,16 @@ router.get("/", getAllCategoriesRules, validate, categoryController.getAllCatego
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Pendidikan"
+ *                 example: "Education"
  *               description:
  *                 type: string
- *                 example: "Kategori materi pembelajaran"
+ *                 example: "Category for learning materials"
  *               archived:
  *                 type: boolean
  *                 example: false
  *     responses:
  *       200:
- *         description: Kategori berhasil diperbarui
+ *         description: Category updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -177,13 +177,13 @@ router.get("/", getAllCategoriesRules, validate, categoryController.getAllCatego
  *                 data:
  *                   $ref: '#/components/schemas/Category'
  *       400:
- *         description: Validasi gagal (nama kosong atau format ID tidak valid)
+ *         description: Validation failed (empty name or invalid ID format)
  *       404:
- *         description: Kategori tidak ditemukan
+ *         description: Category not found
  *       409:
- *         description: Nama kategori sudah dipakai kategori lain
+ *         description: Category name already used by another category
  *   delete:
- *     summary: Menghapus kategori berdasarkan ID
+ *     summary: Delete a category by ID
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -195,9 +195,9 @@ router.get("/", getAllCategoriesRules, validate, categoryController.getAllCatego
  *           type: string
  *     responses:
  *       200:
- *         description: Kategori berhasil dihapus
+ *         description: Category deleted successfully
  *       404:
- *         description: Kategori tidak ditemukan
+ *         description: Category not found
  */
 router.get("/:id", getCategoryByIdRules, validate, categoryController.getCategory);
 router.put("/:id", updateCategoryRules, validate, categoryController.updateCategory);

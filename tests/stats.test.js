@@ -12,7 +12,7 @@ describe("Stats Endpoint (API Key)", () => {
     it("should reject request with invalid API key", async () => {
         const res = await request(app)
         .get("/api/stats/summary")
-        .set("x-api-key", "kunci-ngasal");
+        .set("x-api-key", "fake-key");
 
         expect(res.statusCode).toBe(401);
         expect(res.body.message).toMatch(/invalid api key/i);

@@ -16,7 +16,7 @@ const createCategory = catchAsync(async (req, res, next) => {
     await Log.create({
         user: req.user._id,
         action: "CREATE_CATEGORY",
-        description: `User membuat kategori baru: "${category.name}"`,
+        description: `User created a new category: "${category.name}"`,
     });
 
     res.status(201).json({
@@ -75,7 +75,7 @@ const updateCategory = catchAsync(async (req, res, next) => {
     await Log.create({
         user: req.user._id,
         action: "UPDATE_CATEGORY",
-        description: `User memperbarui kategori menjadi: "${updatedCategory.name}"`,
+        description: `User updated category to: "${updatedCategory.name}"`,
     });
 
     res.status(200).json({
@@ -99,7 +99,7 @@ const deleteCategory = catchAsync(async (req, res, next) => {
     await Log.create({
         user: req.user._id,
         action: "DELETE_CATEGORY",
-        description: `User menghapus kategori: "${existingCategory.name}"`,
+        description: `User deleted category: "${existingCategory.name}"`,
     });
 
     res.status(200).json({

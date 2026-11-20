@@ -16,7 +16,7 @@ router.use(protect);
  * @swagger
  * /api/todos:
  *   post:
- *     summary: Membuat todo baru (wajib login)
+ *     summary: Create a new todo (requires login)
  *     tags: [Todos]
  *     security:
  *       - bearerAuth: []
@@ -32,18 +32,18 @@ router.use(protect);
  *                 type: string
  *                 minLength: 3
  *                 maxLength: 100
- *                 example: Belajar Swagger
+ *                 example: Learn Swagger
  *               description:
  *                 type: string
  *                 maxLength: 500
- *                 example: Menulis dokumentasi endpoint todo
+ *                 example: Write API documentation for todo endpoints
  *               category:
  *                 type: string
- *                 description: ID kategori (opsional, format ObjectId MongoDB)
+ *                 description: Category ID (optional, MongoDB ObjectId format)
  *                 example: 665f1b2c8b1e2a1a2c3d2222
  *     responses:
  *       201:
- *         description: Todo berhasil dibuat
+ *         description: Todo created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -54,13 +54,13 @@ router.use(protect);
  *                 data:
  *                   $ref: '#/components/schemas/Todo'
  *       400:
- *         description: Validasi gagal (misal title kosong atau di luar 3-100 karakter, atau ID kategori tidak valid saat dikirim)
+ *         description: Validation failed (e.g., title empty or outside 3-100 chars, or invalid category ID format)
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
- *         description: Belum login / token tidak valid
+ *         description: Not logged in / invalid token
  */
 router.post("/", createTodoRules, validate, todoController.createTodo);
 
@@ -68,7 +68,7 @@ router.post("/", createTodoRules, validate, todoController.createTodo);
  * @swagger
  * /api/todos:
  *   get:
- *     summary: Mengambil daftar todo (user biasa hanya melihat miliknya, admin melihat todo semua user) dengan pagination & search
+ *     summary: Get todo list (regular users see their own, admin sees all users' todos) with pagination & search
  *     tags: [Todos]
  *     security:
  *       - bearerAuth: []
@@ -78,39 +78,39 @@ router.post("/", createTodoRules, validate, todoController.createTodo);
  *         schema:
  *           type: integer
  *           minimum: 1
- *         description: Nomor halaman
+ *         description: Page number
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
  *           minimum: 1
  *           maximum: 100
- *         description: Jumlah data per halaman
+ *         description: Number of items per page
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Kata kunci pencarian berdasarkan judul (title)
+ *         description: Search keyword based on title
  *       - in: query
  *         name: completed
  *         schema:
  *           type: boolean
- *         description: Filter berdasarkan status selesai
+ *         description: Filter by completion status
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
  *           enum: [createdAt, title, completed]
- *         description: Field yang dipakai untuk mengurutkan data
+ *         description: Field to sort by
  *       - in: query
  *         name: order
  *         schema:
  *           type: string
  *           enum: [asc, desc]
- *         description: Arah pengurutan data
+ *         description: Sort direction
  *     responses:
  *       200:
- *         description: Daftar todo berhasil diambil
+ *         description: Todo list retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -130,7 +130,7 @@ router.post("/", createTodoRules, validate, todoController.createTodo);
  *                     totalItems: { type: integer, example: 25 }
  *                     itemsPerPage: { type: integer, example: 10 }
  *       401:
- *         description: Belum login / token tidak valid
+ *         description: Not logged in / invalid token
  */
 router.get("/", getAllTodosRules, validate, todoController.getAllTodos);
 
@@ -138,7 +138,7 @@ router.get("/", getAllTodosRules, validate, todoController.getAllTodos);
  * @swagger
  * /api/todos/{id}:
  *   get:
- *     summary: Mengambil satu todo berdasarkan ID
+ *     summary: Get a single todo by ID
  *     tags: [Todos]
  *     security:
  *       - bearerAuth: []
@@ -148,10 +148,10 @@ router.get("/", getAllTodosRules, validate, todoController.getAllTodos);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID todo (format ObjectId MongoDB)
+ *         description: Todo ID (MongoDB ObjectId format)
  *     responses:
  *       200:
- *         description: Todo berhasil ditemukan
+ *         description: Todo found successfully
  *         content:
  *           application/json:
  *             schema:
@@ -162,13 +162,13 @@ router.get("/", getAllTodosRules, validate, todoController.getAllTodos);
  *                 data:
  *                   $ref: '#/components/schemas/Todo'
  *       400:
- *         description: Format ID tidak valid
+ *         description: Invalid ID format
  *       401:
- *         description: Belum login / token tidak valid
+ *         description: Not logged in / invalid token
  *       403:
- *         description: Todo ini bukan milik user yang sedang login (admin dikecualikan)
+ *         description: This todo does not belong to the logged-in user (admin excluded)
  *       404:
- *         description: Todo tidak ditemukan
+ *         description: Todo not found
  */
 router.get("/:id", getTodoByIdRules, validate, todoController.getTodoById);
 
@@ -176,7 +176,7 @@ router.get("/:id", getTodoByIdRules, validate, todoController.getTodoById);
  * @swagger
  * /api/todos/{id}:
  *   put:
- *     summary: Mengupdate todo berdasarkan ID
+ *     summary: Update a todo by ID
  *     tags: [Todos]
  *     security:
  *       - bearerAuth: []
@@ -186,7 +186,7 @@ router.get("/:id", getTodoByIdRules, validate, todoController.getTodoById);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID todo (format ObjectId MongoDB)
+ *         description: Todo ID (MongoDB ObjectId format)
  *     requestBody:
  *       required: false
  *       content:
@@ -198,11 +198,11 @@ router.get("/:id", getTodoByIdRules, validate, todoController.getTodoById);
  *                 type: string
  *                 minLength: 3
  *                 maxLength: 100
- *                 example: Belajar Swagger (revisi)
+ *                 example: Learn Swagger (revised)
  *               description:
  *                 type: string
  *                 maxLength: 500
- *                 example: Menambahkan contoh response schema
+ *                 example: Adding response schema examples
  *               completed:
  *                 type: boolean
  *                 example: true
@@ -214,7 +214,7 @@ router.get("/:id", getTodoByIdRules, validate, todoController.getTodoById);
  *                 example: false
  *     responses:
  *       200:
- *         description: Todo berhasil diupdate
+ *         description: Todo updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -225,13 +225,13 @@ router.get("/:id", getTodoByIdRules, validate, todoController.getTodoById);
  *                 data:
  *                   $ref: '#/components/schemas/Todo'
  *       400:
- *         description: Validasi gagal atau format ID tidak valid
+ *         description: Validation failed or invalid ID format
  *       401:
- *         description: Belum login / token tidak valid
+ *         description: Not logged in / invalid token
  *       403:
- *         description: Todo ini bukan milik user yang sedang login (admin dikecualikan)
+ *         description: This todo does not belong to the logged-in user (admin excluded)
  *       404:
- *         description: Todo tidak ditemukan
+ *         description: Todo not found
  */
 router.put("/:id", updateTodoRules, validate, todoController.updateTodo);
 
@@ -239,7 +239,7 @@ router.put("/:id", updateTodoRules, validate, todoController.updateTodo);
  * @swagger
  * /api/todos/{id}:
  *   delete:
- *     summary: Menghapus todo berdasarkan ID
+ *     summary: Delete a todo by ID
  *     tags: [Todos]
  *     security:
  *       - bearerAuth: []
@@ -249,10 +249,10 @@ router.put("/:id", updateTodoRules, validate, todoController.updateTodo);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID todo (format ObjectId MongoDB)
+ *         description: Todo ID (MongoDB ObjectId format)
  *     responses:
  *       200:
- *         description: Todo berhasil dihapus
+ *         description: Todo deleted successfully
  *         content:
  *           application/json:
  *             schema:
@@ -263,13 +263,13 @@ router.put("/:id", updateTodoRules, validate, todoController.updateTodo);
  *                 data:
  *                   $ref: '#/components/schemas/Todo'
  *       400:
- *         description: Format ID tidak valid
+ *         description: Invalid ID format
  *       401:
- *         description: Belum login / token tidak valid
+ *         description: Not logged in / invalid token
  *       403:
- *         description: Todo ini bukan milik user yang sedang login (admin dikecualikan)
+ *         description: This todo does not belong to the logged-in user (admin excluded)
  *       404:
- *         description: Todo tidak ditemukan
+ *         description: Todo not found
  */
 router.delete("/:id", getTodoByIdRules, validate, todoController.deleteTodo);
 

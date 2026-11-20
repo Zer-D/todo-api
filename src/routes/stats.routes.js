@@ -7,17 +7,17 @@ const checkApiKey = require("../middlewares/apiKey.middleware");
  * @swagger
  * /api/stats/summary:
  *   get:
- *     summary: Mengambil ringkasan statistik todo (total, selesai, belum selesai)
+ *     summary: Get todo statistics summary (total, completed, pending)
  *     description: >
- *       Endpoint ini ditujukan untuk integrasi machine-to-machine (misalnya dashboard
- *       eksternal), sehingga tidak memakai login JWT seperti endpoint /api/todos,
- *       melainkan proteksi API Key lewat header x-api-key.
+ *       This endpoint is designed for machine-to-machine integration (e.g., external
+ *       dashboards), so it does not use JWT login like /api/todos endpoints,
+ *       but instead uses API Key protection via the x-api-key header.
  *     tags: [Stats]
  *     security:
  *       - apiKeyAuth: []
  *     responses:
  *       200:
- *         description: Ringkasan statistik berhasil diambil
+ *         description: Statistics summary retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -32,7 +32,7 @@ const checkApiKey = require("../middlewares/apiKey.middleware");
  *                     completedTodos: { type: integer, example: 10 }
  *                     pendingTodos: { type: integer, example: 15 }
  *       401:
- *         description: API key tidak dikirim atau tidak valid
+ *         description: API key missing or invalid
  */
 router.get("/summary", checkApiKey, statsController.getSummary);
 

@@ -6,7 +6,7 @@ const authController = require("../controllers/auth.controller");
  * @swagger
  * /api/auth/register:
  *   post:
- *     summary: Mendaftarkan user baru
+ *     summary: Register a new user
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -18,20 +18,20 @@ const authController = require("../controllers/auth.controller");
  *             properties:
  *               name:
  *                 type: string
- *                 example: Budi
+ *                 example: John
  *               email:
  *                 type: string
- *                 example: budi@example.com
+ *                 example: john@example.com
  *               password:
  *                 type: string
- *                 example: rahasia123
+ *                 example: secret123
  *     responses:
  *       201:
- *         description: User berhasil didaftarkan
+ *         description: User registered successfully
  *       400:
- *         description: Data tidak lengkap
+ *         description: Incomplete data
  *       409:
- *         description: Email sudah terdaftar
+ *         description: Email already registered
  */
 router.post("/register", authController.register);
 
@@ -39,7 +39,7 @@ router.post("/register", authController.register);
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login dan mendapatkan JWT token
+ *     summary: Login and get JWT token
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -51,15 +51,15 @@ router.post("/register", authController.register);
  *             properties:
  *               email:
  *                 type: string
- *                 example: budi@example.com
+ *                 example: john@example.com
  *               password:
  *                 type: string
- *                 example: rahasia123
+ *                 example: secret123
  *     responses:
  *       200:
- *         description: Login berhasil, token dikembalikan
+ *         description: Login successful, token returned
  *       401:
- *         description: Email atau password salah
+ *         description: Invalid email or password
  */
 router.post("/login", authController.login);
 

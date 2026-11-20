@@ -26,7 +26,7 @@ const createTodo = catchAsync(async (req, res, next) => {
     await Log.create({
         user: req.user._id,
         action: "CREATE_TODO",
-        description: `User membuat todo baru: "${todo.title}"`,
+        description: `User created a new todo: "${todo.title}"`,
     });
 
     res.status(201).json({
@@ -109,7 +109,7 @@ const updateTodo = catchAsync(async (req, res, next) => {
     await Log.create({
         user: req.user._id,
         action: "UPDATE_TODO",
-        description: `User memperbarui todo: "${updatedTodo.title}"`,
+        description: `User updated todo: "${updatedTodo.title}"`,
     });
 
     res.status(200).json({
@@ -139,7 +139,7 @@ const deleteTodo = catchAsync(async (req, res, next) => {
     await Log.create({
         user: req.user._id,
         action: "DELETE_TODO",
-        description: `User menghapus todo: "${existingTodo.title}"`,
+        description: `User deleted todo: "${existingTodo.title}"`,
     });
 
     res.status(200).json({
