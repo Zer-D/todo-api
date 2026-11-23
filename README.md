@@ -46,6 +46,7 @@ Built with a structured architecture (MVC + Service Layer) and equipped with JWT
 
 ---
 
+<a id="about"></a>
 ## 📖 About
 
 **Todo List Management API** is a production-ready RESTful API built with Node.js, Express, and MongoDB. It provides full CRUD operations for managing todo lists and categories, complete with JWT-based authentication, role-based access control (RBAC), automatic activity logging, and interactive API documentation via Swagger UI.
@@ -61,13 +62,14 @@ Built with a structured architecture (MVC + Service Layer) and equipped with JWT
 
 ---
 
+<a id="features"></a>
 ## ✨ Features
 
 | Feature | Description |
 |---------|-------------|
 | 🔐 **Authentication & Authorization** | Register & Login using JSON Web Tokens (JWT) with role-based access (`user` & `admin`) |
 | 📝 **Todo & Category Management** | Full CRUD operations for Todos (with data ownership) and Categories |
-| 📊 **Activity Log** | Automatic logging of user data mutations. Admins see all logs; users see only their own |
+| 📊 **Activity Log** | Automatic logging of user data mutations with **data snapshots**. Admins see all logs; users see only their own. Snapshots preserve the state of created/deleted items so history remains readable even after the original data is removed. |
 | 📈 **Stats with API Key** | Summary statistics endpoint for external integrations, protected by `x-api-key` header |
 | 🛡️ **Security & Validation** | Global error handling, request logging, and strict input validation with `express-validator` |
 | 🧪 **Automated Testing** | 55 integration tests with Jest & Supertest using in-memory MongoDB |
@@ -75,6 +77,7 @@ Built with a structured architecture (MVC + Service Layer) and equipped with JWT
 
 ---
 
+<a id="tech-stack"></a>
 ## 🛠 Tech Stack
 
 | Category | Technologies |
@@ -89,6 +92,7 @@ Built with a structured architecture (MVC + Service Layer) and equipped with JWT
 
 ---
 
+<a id="project-structure"></a>
 ## 📁 Project Structure
 
 ```
@@ -147,6 +151,7 @@ todo-api/
 
 ---
 
+<a id="quick-start"></a>
 ## 🚀 Quick Start
 
 ### 1. Clone & Install
@@ -213,6 +218,7 @@ npm start
 
 ---
 
+<a id="testing"></a>
 ## 🧪 Testing
 
 ```bash
@@ -247,6 +253,7 @@ EXTERNAL_API_KEY=test-api-key
 
 ---
 
+<a id="deployment"></a>
 ## ☁️ Deployment (Vercel)
 
 This project is **Vercel-ready** with `vercel.json` and `api/index.js`.
@@ -274,6 +281,7 @@ This project is **Vercel-ready** with `vercel.json` and `api/index.js`.
 
 ---
 
+<a id="api-reference"></a>
 ## 📖 API Reference
 
 ### 🔗 Interactive Documentation
@@ -347,10 +355,42 @@ This project is **Vercel-ready** with `vercel.json` and `api/index.js`.
 |:-------|:---------|:-----------|:------------|
 | `GET` | `/api/logs` | JWT | Admin: all logs; User: own logs only |
 
+#### Activity Log Snapshot
+
+Each log entry stores a **snapshot** of the data at the moment of mutation, so history remains readable even after the original data is deleted.
+
+| Event | Snapshot Includes |
+|:------|:------------------|
+| `CREATE_TODO` | `{ title, description, categoryId }` |
+| `UPDATE_TODO` | `{ fieldChanged, before, after }` |
+| `DELETE_TODO` | `{ _id, title, description, categoryId }` |
+| `CREATE_CATEGORY` | `{ name, description }` |
+| `DELETE_CATEGORY` | `{ _id, name, todos: [...] }` |
+
+Example log response with snapshot:
+
+```json
+{
+  "_id": "67a1b2c3d4e5f6...",
+  "action": "DELETE_TODO",
+  "user": { "_id": "...", "name": "John Doe", "email": "john@example.com" },
+  "targetModel": "Todo",
+  "targetId": "67a1b2c3d4e5f6...",
+  "snapshot": {
+    "_id": "67a1b2c3d4e5f6...",
+    "title": "Learn Swagger",
+    "description": "Write API docs",
+    "completed": false,
+    "categoryId": "67a988..."
+  },
+  "createdAt": "2026-11-23T10:00:00.000Z"
+}
+```
 </details>
 
 ---
 
+<a id="usage-examples"></a>
 ## 💡 Usage Examples
 
 ### Register & Login
@@ -369,12 +409,30 @@ curl -X POST http://localhost:3000/api/auth/login \
 # Response: { "success": true, "data": { "user": {...}, "token": "eyJhbGciOi..." } }
 ```
 
+### 🔐 Working with JWT (Full Flow)
+
+```bash
+# 1 — Login and save token to variable
+TOKEN=$(curl -s -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john@example.com","password":"secret123"}' \
+  | jq -r '.data.token')
+
+echo "Token: $TOKEN"
+
+# 2 — Use token in subsequent requests
+curl -X GET http://localhost:3000/api/todos \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+> 💡 Token is valid until expiration (`JWT_EXPIRES_IN` in `.env`). Regenerate token on logout or expiration.
+
 ### Create Todo (with JWT)
 
 ```bash
 curl -X POST http://localhost:3000/api/todos \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
   -d '{"title":"Learn Swagger","description":"Write API docs","category":"CAT_ID"}'
 ```
 
@@ -382,11 +440,12 @@ curl -X POST http://localhost:3000/api/todos \
 
 ```bash
 curl -X GET http://localhost:3000/api/stats/summary \
-  -H "x-api-key: YOUR_EXTERNAL_API_KEY"
+  -H "x-api-key: ***"
 ```
 
 ---
 
+<a id="architecture-overview"></a>
 ## 🏗 Architecture Overview
 
 ```
@@ -429,6 +488,7 @@ curl -X GET http://localhost:3000/api/stats/summary \
 
 ---
 
+<a id="contributing"></a>
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -446,6 +506,7 @@ curl -X GET http://localhost:3000/api/stats/summary \
 
 ---
 
+<a id="faq"></a>
 ## ❓ FAQ
 
 **Q: Do I need a real MongoDB to run tests?**  
@@ -459,18 +520,21 @@ A: It protects the `/api/stats/summary` endpoint so only authorized external ser
 
 ---
 
+<a id="license"></a>
 ## 📄 License
 
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ---
 
+<a id="author"></a>
 ## 👨‍💻 Author
 
 **Zer-D** — [GitHub](https://github.com/Zer-D) • [Project Repository](https://github.com/Zer-D/todo-api)
 
 ---
 
+<a id="support-acknowledgments"></a>
 ## 🙏 Support & Acknowledgments
 
 If you find this project helpful, please consider giving it a ⭐ or forking it!

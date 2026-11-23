@@ -18,7 +18,6 @@ const todoSchema = new mongoose.Schema(
         category: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category",
-            // required removed — category is optional per brief
         },
         owner: {
             type: mongoose.Schema.Types.ObjectId,
