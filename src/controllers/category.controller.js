@@ -2,6 +2,7 @@ const categoryService = require("../services/category.service");
 const Log = require("../models/log.model");
 const AppError = require("../utils/AppError");
 const catchAsync = require("../utils/catchAsync");
+const Todo = require("../models/todo.model");
 
 const createCategory = catchAsync(async (req, res, next) => {
     const { name, description } = req.body;
@@ -16,7 +17,13 @@ const createCategory = catchAsync(async (req, res, next) => {
     await Log.create({
         user: req.user._id,
         action: "CREATE_CATEGORY",
+        targetModel: "Category",
+        targetId: category._id,
         description: `User created a new category: "${category.name}"`,
+        snapshot: {
+            name: category.name,
+            description: category.description,
+        },
     });
 
     res.status(201).json({
@@ -72,10 +79,32 @@ const updateCategory = catchAsync(async (req, res, next) => {
         updated_by: req.user._id,
     });
 
+    const fieldsToCompare = ["name", "description", "archived"];
+    const fieldChanged = [];
+    const before = {};
+    const after = {};
+
+    fieldsToCompare.forEach((field) => {
+        const beforeVal = existingCategory[field];
+        const afterVal = updatedCategory[field];
+        if (JSON.stringify(beforeVal) !== JSON.stringify(afterVal)) {
+            fieldChanged.push(field);
+            before[field] = beforeVal;
+            after[field] = afterVal;
+        }
+    });
+
     await Log.create({
         user: req.user._id,
         action: "UPDATE_CATEGORY",
+        targetModel: "Category",
+        targetId: updatedCategory._id,
         description: `User updated category to: "${updatedCategory.name}"`,
+        snapshot: {
+            fieldChanged,
+            before,
+            after,
+        },
     });
 
     res.status(200).json({
@@ -96,10 +125,19 @@ const deleteCategory = catchAsync(async (req, res, next) => {
 
     await categoryService.deleteCategory(id);
 
+    const associatedTodos = await Todo.find({ category: existingCategory._id });
+
     await Log.create({
         user: req.user._id,
         action: "DELETE_CATEGORY",
+        targetModel: "Category",
+        targetId: existingCategory._id,
         description: `User deleted category: "${existingCategory.name}"`,
+        snapshot: {
+            _id: existingCategory._id,
+            name: existingCategory.name,
+            todos: associatedTodos.map((t) => ({ _id: t._id, title: t.title })),
+        },
     });
 
     res.status(200).json({

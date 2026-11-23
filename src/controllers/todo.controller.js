@@ -26,7 +26,14 @@ const createTodo = catchAsync(async (req, res, next) => {
     await Log.create({
         user: req.user._id,
         action: "CREATE_TODO",
+        targetModel: "Todo",
+        targetId: todo._id,
         description: `User created a new todo: "${todo.title}"`,
+        snapshot: {
+            title: todo.title,
+            description: todo.description,
+            category: todo.category,
+        },
     });
 
     res.status(201).json({
@@ -106,10 +113,32 @@ const updateTodo = catchAsync(async (req, res, next) => {
         updated_by: req.user._id,
     });
 
+    const fieldsToCompare = ["title", "description", "completed", "category", "archived"];
+    const fieldChanged = [];
+    const before = {};
+    const after = {};
+
+    fieldsToCompare.forEach((field) => {
+        const beforeVal = existingTodo[field];
+        const afterVal = updatedTodo[field];
+        if (JSON.stringify(beforeVal) !== JSON.stringify(afterVal)) {
+            fieldChanged.push(field);
+            before[field] = beforeVal;
+            after[field] = afterVal;
+        }
+    });
+
     await Log.create({
         user: req.user._id,
         action: "UPDATE_TODO",
+        targetModel: "Todo",
+        targetId: updatedTodo._id,
         description: `User updated todo: "${updatedTodo.title}"`,
+        snapshot: {
+            fieldChanged,
+            before,
+            after,
+        },
     });
 
     res.status(200).json({
@@ -139,7 +168,15 @@ const deleteTodo = catchAsync(async (req, res, next) => {
     await Log.create({
         user: req.user._id,
         action: "DELETE_TODO",
+        targetModel: "Todo",
+        targetId: existingTodo._id,
         description: `User deleted todo: "${existingTodo.title}"`,
+        snapshot: {
+            _id: existingTodo._id,
+            title: existingTodo.title,
+            description: existingTodo.description,
+            category: existingTodo.category,
+        },
     });
 
     res.status(200).json({
